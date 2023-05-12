@@ -1,20 +1,20 @@
-import { Connection, createConnection, getConnectionManager } from "typeorm";
+import { Connection, createConnection, getConnectionManager } from 'typeorm';
 
-import config from "./config/ormconfig";
+import config from './config/ormconfig';
 
 export const dbCreateConnection = async (): Promise<Connection | null> => {
-    try {
-        const conn = await createConnection(config);
-        console.log(`Database connection created. Connection: '${conn.name}' 
-        \nDatabase: '${conn.options.database}'`);
-    } catch (err) { 
-        if(err.name == "AlreadHasActiveConnectionError") {
-            const activeConnection = getConnectionManager().get(config.name);
-            return activeConnection;
-        }
-
-        console.log(err);
+  try {
+    console.log('Establishing connection to database...', config);
+    const conn = await createConnection(config);
+    console.log(`Database connection created. Connection: '${conn.name}'\nDatabase: '${conn.options.database}'`);
+  } catch (err) {
+    if (err.name == 'AlreadHasActiveConnectionError') {
+      const activeConnection = getConnectionManager().get(config.name);
+      return activeConnection;
     }
 
-    return null;
-}
+    console.log(err);
+  }
+
+  return null;
+};
