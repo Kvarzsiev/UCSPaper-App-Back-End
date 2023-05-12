@@ -1,20 +1,19 @@
-import { AppDataSource } from "./data-source"
-import { User } from "./entities/User"
+import 'dotenv/config';
 
-AppDataSource.initialize().then(async () => {
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
+import { dbCreateConnection } from 'database/dbCreateConnection';
 
-    console.log("Inserting a new user into the database...")
-    const user = new User()
-    user.firstName = "Timber"
-    user.lastName = "Saw"
-    user.age = 25
-    await AppDataSource.manager.save(user)
-    console.log("Saved a new user with id: " + user.id)
+export const app = express();
+app.use(cors());
+app.use(bodyParser.json());
 
-    console.log("Loading users from the database...")
-    const users = await AppDataSource.manager.find(User)
-    console.log("Loaded users: ", users)
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log(`Server running at port ${port}`);
+});
 
-    console.log("Here you can setup and run express / fastify / any other framework.")
-
-}).catch(error => console.log(error))
+(async () => {
+  await dbCreateConnection();
+})();
