@@ -1,6 +1,14 @@
 import bcrypt from 'bcryptjs'; // caso utilizarmos senhas
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-
+import { Project } from 'entities/Project/Project';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  JoinTable,
+  ManyToMany,
+} from 'typeorm';
 
 @Entity('Person')
 export class Person {
@@ -21,6 +29,10 @@ export class Person {
     nullable: true,
   })
   institution: string;
+
+  @ManyToMany(() => Project, (project) => project.persons)
+  @JoinTable()
+  projects: Project[];
 
   @Column()
   @CreateDateColumn()

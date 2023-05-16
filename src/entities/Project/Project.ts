@@ -1,4 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Person } from 'entities/Person/Person';
+import { Result } from 'entities/Result/Result';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 
 /*
 TODO: Adicionar relação com Person
@@ -18,6 +30,16 @@ export class Project {
     nullable: true,
   })
   sponsor: string;
+
+  @OneToMany(() => Result, (result) => result.project)
+  results: Result[];
+
+  @ManyToMany(() => Person, (person) => person.projects)
+  persons: Person[];
+
+  @OneToOne(() => Person)
+  @JoinColumn()
+  coordinator: Person;
 
   @Column()
   @CreateDateColumn()

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Project } from 'entities/Project/Project';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 
 @Entity('Result')
 export class Result {
@@ -9,6 +10,9 @@ export class Result {
     nullable: true,
   })
   description: string;
+
+  @ManyToOne(() => Project, (project) => project.results)
+  project: Project;
 
   @Column()
   @CreateDateColumn()
