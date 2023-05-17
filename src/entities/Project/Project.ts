@@ -1,5 +1,6 @@
 import { Person } from 'entities/Person/Person';
 import { Result } from 'entities/Result/Result';
+import { PersonProject } from 'entities/PersonProject/PersonProject';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -11,10 +12,6 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-
-/*
-TODO: Adicionar relação com Person
-*/
 
 @Entity('Project')
 export class Project {
@@ -34,12 +31,8 @@ export class Project {
   @OneToMany(() => Result, (result) => result.project)
   results: Result[];
 
-  @ManyToMany(() => Person, (person) => person.projects)
-  persons: Person[];
-
-  @OneToOne(() => Person)
-  @JoinColumn()
-  coordinator: Person;
+  @OneToMany(() => PersonProject, (personProject) => personProject.project)
+  personProjects: PersonProject[];
 
   @Column()
   @CreateDateColumn()

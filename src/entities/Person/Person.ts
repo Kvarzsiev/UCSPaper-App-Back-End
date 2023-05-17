@@ -1,5 +1,5 @@
-import bcrypt from 'bcryptjs'; // caso utilizarmos senhas
 import { Project } from 'entities/Project/Project';
+import { PersonProject } from 'entities/PersonProject/PersonProject';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinTable,
+  OneToMany,
   ManyToMany,
 } from 'typeorm';
 
@@ -30,9 +31,8 @@ export class Person {
   })
   institution: string;
 
-  @ManyToMany(() => Project, (project) => project.persons)
-  @JoinTable()
-  projects: Project[];
+  @OneToMany(() => PersonProject, (personProject) => personProject.person)
+  personProjects: PersonProject[];
 
   @Column()
   @CreateDateColumn()
