@@ -1,3 +1,5 @@
+import { getPersons } from './api/person.swagger';
+
 export const swaggerDocument = {
   openapi: '3.0.1',
   info: {
@@ -13,6 +15,10 @@ export const swaggerDocument = {
       url: 'https://www.apache.org/licenses/LICENSE-2.0.html',
     },
   },
-  paths: {},
+  paths: {
+    '/persons': {
+      get: getPersons,
+    },
+  },
   definitions: {},
 };
