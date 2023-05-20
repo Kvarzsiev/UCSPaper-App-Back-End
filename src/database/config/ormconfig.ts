@@ -1,20 +1,14 @@
-import { ConnectionOptions } from "typeorm";
-
-const config: ConnectionOptions = {
+const config = {
     type: 'mysql',
-    host: process.env.MYSQL_HOST,
-    port: Number(process.env.MYSQL_PORT),
-    username: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASS,
-    database: process.env.MYSQL_DB,
-    synchronize: false,
+    host: process.env.MYSQL_HOST || '127.0.0.1',
+    port: Number(process.env.MYSQL_PORT || '3306'),
+    username: process.env.MYSQL_USER || 'root',
+    password: process.env.MYSQL_PASS || 'rootpass',
+    database: process.env.MYSQL_DB || 'lattes_db',
+    synchronize: true,
     logging: false,
-    entities: ['src/database/**/*.ts'],
+    entities: ['src/entities/**/*.ts', 'dist/src/entities/**/*.js'],
     migrations: ['src/database/migrations/**/*.ts'],
-    cli: {
-        entitiesDir: 'src/database/entities',
-        migrationsDir: 'src/database/migrations'
-    }
 };
 
 export = config;
