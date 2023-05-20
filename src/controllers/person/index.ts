@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { getRepository } from 'typeorm';
+import { AppDataSource } from 'database/dataSource';
 
 import { Person } from 'entities/Person/Person';
 import { CustomError } from 'utils/customError';
 
 export async function getPersons(req: Request, res: Response, next: NextFunction) {
-  const personRepository = await getRepository(Person);
+  const personRepository = await AppDataSource.getRepository(Person);
 
   try {
     const persons = await personRepository.find({
@@ -21,7 +21,7 @@ export async function getPersons(req: Request, res: Response, next: NextFunction
 export async function getPersonById(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
 
-  const personRepository = await getRepository(Person);
+  const personRepository = await AppDataSource.getRepository(Person);
 
   try {
     const person = await personRepository.findOne({
