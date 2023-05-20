@@ -24,7 +24,7 @@ app.listen(port, () => {
 (async () => {
   await AppDataSource.initialize()
     .then(() => {
-      console.log(`Database connected successfully. Connection: ${AppDataSource.options}`);
+      console.log(`Database connected successfully. Connection:`, AppDataSource.options);
     })
     .catch((err) => console.log(err));
 })();
