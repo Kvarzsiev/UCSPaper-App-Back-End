@@ -1,4 +1,4 @@
-import { getPersons } from './api/person.swagger';
+import { getPersons, getPerson } from './api/person.swagger';
 
 export const swaggerDocument = {
   openapi: '3.0.1',
@@ -18,6 +18,9 @@ export const swaggerDocument = {
   paths: {
     '/persons': {
       get: getPersons,
+    },
+    '/persons/{id}': {
+      get: getPerson,
     },
   },
   definitions: {},
