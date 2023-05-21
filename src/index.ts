@@ -12,9 +12,9 @@ import { swaggerDocument } from '../swagger';
 export const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(errorHandler);
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(appRouter);
+app.use(errorHandler);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
