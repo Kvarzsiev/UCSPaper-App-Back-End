@@ -39,7 +39,10 @@ export async function getPersonById(req: Request, res: Response, next: NextFunct
 
     res.status(200).send(person);
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Can't retrieve list of users.`, null, err);
+
+    console.error(err)
+
+    const customError = new CustomError(400, 'Raw', `Can't retrieve user.`, null, err);
     return next(customError);
   }
 }
@@ -56,7 +59,7 @@ export async function createPerson(req: Request, res: Response, next: NextFuncti
     person.institution = institution;
 
     await personRepository.save(person);
-    res.status(200).send(person);
+    res.status(201).send(person);
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not create person`, null, err);
     return next(customError);
