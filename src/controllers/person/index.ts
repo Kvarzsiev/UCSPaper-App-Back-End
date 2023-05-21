@@ -39,9 +39,6 @@ export async function getPersonById(req: Request, res: Response, next: NextFunct
 
     res.status(200).send(person);
   } catch (err) {
-
-    console.error(err)
-
     const customError = new CustomError(400, 'Raw', `Can't retrieve user.`, null, err);
     return next(customError);
   }
