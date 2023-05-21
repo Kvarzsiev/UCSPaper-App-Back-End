@@ -23,6 +23,10 @@ describe('Project', () => {
     projectRepository = await AppDataSource.getRepository(Project);
   });
 
+  after(async () => {
+    await AppDataSource.destroy();
+  });
+
   beforeEach(async () => {
     await projectRepository.save(project);
   });
