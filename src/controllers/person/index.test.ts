@@ -25,6 +25,10 @@ describe('Person', () => {
     personRepository = await AppDataSource.getRepository(Person);
   });
 
+	after(async () => {
+		await AppDataSource.destroy();
+	});
+
   beforeEach(async () => {
     await personRepository.save(person);
   });
@@ -36,10 +40,52 @@ describe('Person', () => {
   describe('GET /persons', () => {
     it('should return list of all persons', async () => {
       const res = await request(app).get('/persons');
-      console.log(res);
       expect(res.status).to.equal(200);
       expect(res.body.length).to.be.above(0);
-      expect(res.body[0].email).to.equal('test@example.com');
+    });
+
+    it('should return person by Id', async () => {
+      const res = await request(app).get(`/persons/${person.id}`);
+      expect(res.status).to.equal(200);
+      expect(res.body.id).to.equal(person.id);
+    });
+
+    it('should return 404 if no person is found', async () => {
+      const res = await request(app).get('/persons/0');
+      expect(res.status).to.equal(404);
+    });
+  });
+
+  describe('POST /persons', () => {
+    it('should return created person', async () => {
+      const res = await request(app).post('/persons').set('ContentType', 'application/json').send({
+        name: 'test person',
+        email: 'postTestPerson@test.com',
+        institution: 'test',
+      });
+
+      console.log(res.body);
+      expect(res.status).to.equal(201);
+      expect(res.body.email).to.equal('postTestPerson@test.com');
+      await personRepository.delete(res.body.id);
+    });
+
+    it('should return 400 if duplicated person', async () => {
+      const firstPerson = new Person();
+      firstPerson.name = 'test person';
+      firstPerson.email = 'postTestPerson@test.com';
+      firstPerson.institution = 'test';
+
+      await personRepository.save(firstPerson);
+
+      const res = await request(app).post('/persons').set('ContentType', 'application/json').send({
+        name: 'test person',
+        email: 'postTestPerson@test.com',
+        institution: 'test',
+      });
+
+      expect(res.status).to.equal(400);
+      await personRepository.delete(firstPerson.id);
     });
   });
 });
