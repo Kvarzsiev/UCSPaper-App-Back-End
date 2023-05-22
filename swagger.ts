@@ -1,3 +1,4 @@
+import { getProjects, getProject, postProject } from './api/project.swagger';
 import { getPersons, getPerson } from './api/person.swagger';
 
 export const swaggerDocument = {
@@ -21,6 +22,13 @@ export const swaggerDocument = {
     },
     '/persons/{id}': {
       get: getPerson,
+    },
+    '/projects': {
+      get: getProjects,
+      post: postProject,
+    },
+    '/projects/{id}': {
+      get: getProject,
     },
   },
   definitions: {},
