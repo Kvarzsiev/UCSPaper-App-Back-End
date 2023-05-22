@@ -4,6 +4,7 @@ import { AppDataSource } from 'database/dataSource';
 import { Person } from 'entities/Person/Person';
 import { Project } from 'entities/Project/Project';
 import { CustomError } from 'utils/customError';
+import { PersonProject } from 'entities/PersonProject/PersonProject';
 
 export async function getProjects(req: Request, res: Response, next: NextFunction) {
   const projectRepository = await AppDataSource.getRepository(Project);
@@ -58,6 +59,42 @@ export async function createProject(req: Request, res: Response, next: NextFunct
     project.description = description;
     project.sponsor = sponsor;
 
+    await projectRepository.save(project);
+    res.status(201).send(project);
+  } catch (err) {
+    const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
+    return next(customError);
+  }
+}
+
+export async function editProject(req: Request, res: Response, next: NextFunction) {
+  const id = Number(req.params.id);
+  const { description, sponsor, persons } = req.body;
+
+  const projectRepository = await AppDataSource.getRepository(Project);
+  const personProjectRepository = await AppDataSource.getRepository(PersonProject);
+
+  try {
+    const project = await projectRepository.findOne({
+      where: {
+        id: id,
+      },
+      select: ['id', 'description', 'sponsor'],
+      relations: ['personProjects', 'results'],
+    });
+
+    if (persons?.length > 0) {
+      persons.forEach(async (person) => {
+        if (!project.personProjects.some((pp) => pp.id === person.id)) {
+          const newPersonProject = new PersonProject();
+          newPersonProject.project_id = id;
+          newPersonProject.person_id = person.id;
+          newPersonProject.role = person.role;
+
+          await personProjectRepository.save(newPersonProject);
+        }
+      });
+    }
     await projectRepository.save(project);
     res.status(201).send(project);
   } catch (err) {
