@@ -41,4 +41,8 @@ export class Project {
   @Column()
   @UpdateDateColumn()
   updated_at: Date;
+
+  hasResult(resultId: number): Boolean {
+    return this.results.some((result) => result.id === resultId);
+  }
 }
