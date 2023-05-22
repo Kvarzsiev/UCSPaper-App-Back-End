@@ -41,12 +41,12 @@ describe('Result', () => {
   describe('POST /results', () => {
     it('should return created project', async () => {
       const res = await request(app).post('/results').set('ContentType', 'application/json').send({
-        description: 'test project',
+        description: 'test result',
         projectId: project.id,
       });
 
       expect(res.status).to.equal(201);
-      expect(res.body.description).to.equal('test project');
+      expect(res.body.description).to.equal('test result');
       expect(res.body.project.id).to.equal(project.id);
 
       await resultRepository.delete(res.body.id);
@@ -54,7 +54,7 @@ describe('Result', () => {
 
     it('should return 404 if project not found', async () => {
       const res = await request(app).post('/results').set('ContentType', 'application/json').send({
-        description: 'test project',
+        description: 'test result',
         projectId: 0,
       });
 

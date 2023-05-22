@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppDataSource } from 'database/dataSource';
 
+import { PersonProject } from 'entities/PersonProject/PersonProject';
 import { Result } from 'entities/Result/Result';
 import { Project } from 'entities/Project/Project';
+import { Person } from 'entities/Person/Person';
 import { CustomError } from 'utils/customError';
 
 export async function getResults(req: Request, res: Response, next: NextFunction) {
@@ -11,7 +13,7 @@ export async function getResults(req: Request, res: Response, next: NextFunction
   try {
     const results = await resultRepository.find({
       select: ['id', 'description'],
-      relations: ['project'],
+      relations: ['project', 'persons'],
     });
     res.status(200).send(results);
   } catch (err) {
@@ -31,7 +33,7 @@ export async function getResultById(req: Request, res: Response, next: NextFunct
         id: id,
       },
       select: ['id', 'description'],
-      relations: ['project'],
+      relations: ['project', 'persons'],
     });
 
     if (!result) {
@@ -47,12 +49,18 @@ export async function getResultById(req: Request, res: Response, next: NextFunct
 }
 
 export async function createResult(req: Request, res: Response, next: NextFunction) {
-  const { description, projectId } = req.body;
+  const { description, projectId, members } = req.body;
+
+  console.log(members);
 
   const projectRepository = await AppDataSource.getRepository(Project);
   const resultRepository = await AppDataSource.getRepository(Result);
+  const personRepository = await AppDataSource.getRepository(Person);
+  const personProjectRepository = await AppDataSource.getRepository(PersonProject);
 
   try {
+    let resultPersons = [];
+
     const project = await projectRepository.findOne({
       where: {
         id: projectId,
@@ -60,13 +68,46 @@ export async function createResult(req: Request, res: Response, next: NextFuncti
     });
 
     if (!project) {
-      const customError = new CustomError(404, 'Not Found', 'Project not found');
+      const customError = new CustomError(400, 'Not Found', 'Project not found');
       return next(customError);
+    }
+
+    if (members!.length > 0) {
+      members.forEach(async (memberId) => {
+        const personProject = await personProjectRepository
+          .createQueryBuilder('personProject')
+          .select('personProject')
+          .where('personProject.person_id = :personId AND personProject.project_id = :projectId', {
+            personId: memberId,
+            projectId: projectId,
+          })
+          .getOne();
+
+        console.log(personProject);
+
+        if (!personProject) {
+          const customError = new CustomError(
+            400,
+            'Not Found',
+            'A provided member does not exists or does not belong to project',
+          );
+          return next(customError);
+        }
+
+        const person = await personRepository.findOne({
+          where: {
+            id: personProject.person_id,
+          },
+        });
+
+        resultPersons.push(person);
+      });
     }
 
     const result = new Result();
     result.description = description;
     result.project = project;
+    result.persons = resultPersons;
 
     await resultRepository.save(result);
     res.status(201).send(result);
