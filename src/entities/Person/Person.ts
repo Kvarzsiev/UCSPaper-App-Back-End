@@ -10,6 +10,7 @@ import {
   OneToMany,
   ManyToMany,
 } from 'typeorm';
+import { Result } from 'entities/Result/Result';
 
 @Entity('Person')
 export class Person {
@@ -33,6 +34,9 @@ export class Person {
 
   @OneToMany(() => PersonProject, (personProject) => personProject.person)
   personProjects: PersonProject[];
+
+  @ManyToMany(() => Result, (result) => result.persons)
+  results: Result[];
 
   @Column()
   @CreateDateColumn()

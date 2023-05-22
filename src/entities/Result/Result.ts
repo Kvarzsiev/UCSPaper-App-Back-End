@@ -1,5 +1,6 @@
 import { Project } from 'entities/Project/Project';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Person } from 'entities/Person/Person';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinTable, ManyToMany } from 'typeorm';
 
 @Entity('Result')
 export class Result {
@@ -13,6 +14,10 @@ export class Result {
 
   @ManyToOne(() => Project, (project) => project.results)
   project: Project;
+
+  @ManyToMany(() => Person, (person) => person.results)
+  @JoinTable()
+  persons: Person[];
 
   @Column()
   @CreateDateColumn()
