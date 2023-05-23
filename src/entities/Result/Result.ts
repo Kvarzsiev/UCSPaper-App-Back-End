@@ -1,6 +1,15 @@
 import { Project } from 'entities/Project/Project';
 import { Person } from 'entities/Person/Person';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinTable, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinTable,
+  ManyToMany,
+} from 'typeorm';
 
 @Entity('Result')
 export class Result {
@@ -15,7 +24,9 @@ export class Result {
   @ManyToOne(() => Project, (project) => project.results)
   project: Project;
 
-  @ManyToMany(() => Person, (person) => person.results)
+  @ManyToMany(() => Person, (person) => person.results, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   persons: Person[];
 
