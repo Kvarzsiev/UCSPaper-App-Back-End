@@ -3,6 +3,7 @@ import { AppDataSource } from 'database/dataSource';
 
 import { Person } from 'entities/Person/Person';
 import { CustomError } from 'utils/customError';
+import { Project } from 'entities/Project/Project';
 
 export async function getPersons(req: Request, res: Response, next: NextFunction) {
   const personRepository = await AppDataSource.getRepository(Person);
@@ -29,8 +30,20 @@ export async function getPersonById(req: Request, res: Response, next: NextFunct
         id: id,
       },
       select: ['id', 'name', 'email', 'institution'],
-      relations: ['personProjects'],
+      relations: ['personProjects', 'results'],
     });
+
+    let x = await personRepository
+      .createQueryBuilder('person')
+      .leftJoinAndSelect('person.results', 'results')
+      .leftJoinAndSelect('person.personProjects', 'personProject')
+      .leftJoinAndSelect('personProject.project', 'project')
+      .where('person.id = :id', {
+        id: id,
+      })
+      .getOne();
+
+    console.log(x);
 
     if (!person) {
       const customError = new CustomError(404, 'Not Found', 'User not found');
