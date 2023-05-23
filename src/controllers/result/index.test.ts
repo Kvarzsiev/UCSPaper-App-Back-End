@@ -52,13 +52,13 @@ describe('Result', () => {
       await resultRepository.delete(res.body.id);
     });
 
-    it('should return 404 if project not found', async () => {
+    it('should return 400 if project not found', async () => {
       const res = await request(app).post('/results').set('ContentType', 'application/json').send({
         description: 'test result',
         projectId: 0,
       });
 
-      expect(res.status).to.equal(404);
+      expect(res.status).to.equal(400);
     });
   });
 });
