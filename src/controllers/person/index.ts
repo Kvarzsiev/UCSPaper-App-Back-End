@@ -52,13 +52,15 @@ export async function getPersonById(req: Request, res: Response, next: NextFunct
 
     res.status(200).send(person);
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Can't retrieve user.`, null, err);
+    const customError = new CustomError(400, 'Raw', `Can't retrieve user.`, null, [err]);
     return next(customError);
   }
 }
 
 export async function createPerson(req: Request, res: Response, next: NextFunction) {
   const { name, email, institution } = req.body;
+
+  console.log(req)
 
   const personRepository = await AppDataSource.getRepository(Person);
 
@@ -71,7 +73,39 @@ export async function createPerson(req: Request, res: Response, next: NextFuncti
     await personRepository.save(person);
     res.status(201).send(person);
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Could not create person`, null, err);
+    const customError = new CustomError(400, 'Raw', `Could not create person: ${err.sqlMessage}`, null, [err]);
     return next(customError);
   }
+}
+
+export async function editPerson(req: Request, res: Response, next: NextFunction) {
+
+  const id = Number(req.params.id);
+  const { name, email, institution } = req.body;
+
+  const personRepository = await AppDataSource.getRepository(Person);
+
+  try {
+    const person = await personRepository.findOne({
+      where: {
+        id: id
+      }
+    })
+
+    if(!person) {
+      const customError = new CustomError(404, 'Not Found', 'Person not found');
+      return next(customError);
+    }
+
+    person.name = name;
+    person.email = email;
+    person.institution = institution;
+
+    await personRepository.save(person);
+    res.status(200).send(person);
+  } catch(err) {
+    const customError = new CustomError(400, 'Raw', `Could not update user: ${err.sqlMessage}`, null, [err]);
+    return next(customError);
+  }
+
 }
