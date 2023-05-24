@@ -35,6 +35,15 @@ export class Project {
   personProjects: PersonProject[];
 
   @Column()
+  startDate: Date;
+
+  @Column()
+  finishDate: Date;
+
+  @Column()
+  isFinished: Date;
+    
+  @Column()
   @CreateDateColumn()
   created_at: Date;
 
