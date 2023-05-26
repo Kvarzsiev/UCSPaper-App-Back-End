@@ -50,7 +50,7 @@ export async function getProjectById(req: Request, res: Response, next: NextFunc
 }
 
 export async function createProject(req: Request, res: Response, next: NextFunction) {
-  const { description, sponsor } = req.body;
+  const { description, sponsor, createDate, finishDate, isFinished } = req.body;
 
   const projectRepository = await AppDataSource.getRepository(Project);
 
@@ -58,6 +58,8 @@ export async function createProject(req: Request, res: Response, next: NextFunct
     const project = new Project();
     project.description = description;
     project.sponsor = sponsor;
+    project.startDate = parseDateStr(createDate); 
+    project.finishDate = parseDateStr(finishDate, true); 
 
     await projectRepository.save(project);
     res.status(201).send(project);
@@ -101,4 +103,12 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
     const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
     return next(customError);
   }
+}
+
+function parseDateStr(dateStr: string, returnNullIfInvalid : boolean = false): Date {
+  const ticks = Date.parse(dateStr);
+  if(!ticks) {
+    return returnNullIfInvalid ? null : new Date()
+  }
+  return new Date(ticks);
 }

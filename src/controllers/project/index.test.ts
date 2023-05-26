@@ -59,6 +59,9 @@ describe('Project', () => {
       const res = await request(app).post('/projects').set('ContentType', 'application/json').send({
         description: 'test project',
         sponsor: 'test sponsor',
+        createdDate: new Date(),
+        finishDate: null,
+        isFinish: false
       });
 
       console.log(res.body);
