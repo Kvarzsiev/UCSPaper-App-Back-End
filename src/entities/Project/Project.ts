@@ -34,15 +34,15 @@ export class Project {
   @OneToMany(() => PersonProject, (personProject) => personProject.project)
   personProjects: PersonProject[];
 
-  @Column()
+  @Column({ default: null })
   startDate: Date;
 
-  @Column()
+  @Column({ default: null })
   finishDate: Date;
 
-  @Column()
-  isFinished: Date;
-    
+  @Column({ default: false })
+  isFinished: Boolean;
+
   @Column()
   @CreateDateColumn()
   created_at: Date;

@@ -7,7 +7,11 @@
         "build": "rimraf dist && tsc",
         "start": "NODE_PATH=./dist node ./dist/index.js",
         "tsc": "tsc --noEmit",
-        "test": "NODE_PATH=./src mocha --require ts-node/register 'src/**/*.test.ts' --timeout 20000 --exit"
+        "test": "NODE_PATH=./src mocha --require ts-node/register 'src/**/*.test.ts' --timeout 20000 --exit",
+        "migration:run:dev": "PG_HOST=localhost NODE_PATH=./src ts-node ./node_modules/typeorm/cli.js migration:run -d ./src/database/dataSource.ts",
+        "migration:generate": "PG_HOST=localhost NODE_PATH=./src ts-node ./node_modules/.bin/typeorm migration:generate -d ./src/database/dataSource.ts",
+        "migration:revert": "PG_HOST=localhost NODE_PATH=./src ts-node ./node_modules/typeorm/cli.js migration:revert -d ./src/database/dataSource.ts"
+
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.2",
