@@ -27,20 +27,35 @@ export async function getProjectById(req: Request, res: Response, next: NextFunc
   const projectRepository = await AppDataSource.getRepository(Project);
 
   try {
-    const project = await projectRepository.findOne({
-      where: {
+    const project = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.results', 'results')
+      .leftJoinAndSelect('project.personProjects', 'personProject')
+      .leftJoinAndSelect('personProject.person', 'person')
+      .where('project.id = :id', {
         id: id,
-      },
-      select: ['id', 'description', 'sponsor'],
-      relations: ['personProjects', 'results'],
-    });
+      })
+      .getOne();
 
     if (!project) {
       const customError = new CustomError(404, 'Not Found', 'Project not found');
       return next(customError);
     }
 
-    res.status(200).send(project);
+    const responseProject = {
+      id: project.id,
+      description: project.description,
+      sponsor: project.sponsor,
+      startDate: project.startDate,
+      finishedDate: project.finishDate,
+      isFinished: project.isFinished,
+      results: project.results,
+      persons: project.personProjects.map((personProject) => personProject.person),
+      created_at: project.created_at,
+      updated_at: project.updated_at,
+    };
+
+    res.status(200).send(responseProject);
   } catch (err) {
     console.error(err);
 
@@ -58,8 +73,8 @@ export async function createProject(req: Request, res: Response, next: NextFunct
     const project = new Project();
     project.description = description;
     project.sponsor = sponsor;
-    project.startDate = parseDateStr(createDate); 
-    project.finishDate = parseDateStr(finishDate, true); 
+    project.startDate = parseDateStr(createDate);
+    project.finishDate = parseDateStr(finishDate, true);
 
     await projectRepository.save(project);
     res.status(201).send(project);
@@ -105,10 +120,10 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
   }
 }
 
-function parseDateStr(dateStr: string, returnNullIfInvalid : boolean = false): Date {
+function parseDateStr(dateStr: string, returnNullIfInvalid: boolean = false): Date {
   const ticks = Date.parse(dateStr);
-  if(!ticks) {
-    return returnNullIfInvalid ? null : new Date()
+  if (!ticks) {
+    return returnNullIfInvalid ? null : new Date();
   }
   return new Date(ticks);
 }
