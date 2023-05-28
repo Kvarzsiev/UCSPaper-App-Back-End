@@ -54,4 +54,8 @@ export class Project {
   hasResult(resultId: number): Boolean {
     return this.results.some((result) => result.id === resultId);
   }
+
+  personAlreadyMember(personId: number): Boolean {
+    return this.personProjects.some((personProject) => personProject.id === personId);
+  }
 }
