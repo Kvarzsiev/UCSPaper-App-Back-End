@@ -132,3 +132,95 @@ export const postProject = {
     },
   },
 };
+
+export const putProject = {
+  tags: ['Project'],
+  reponses: {
+    '200': {
+      description: 'Project.',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              description: {
+                type: 'string',
+              },
+              sponsor: {
+                type: 'string',
+              },
+              results: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    desciption: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+              persons: {
+                type: 'array',
+                properties: {
+                  name: { type: 'string' },
+                  email: { type: 'string' },
+                  institution: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  produces: ['application/json'],
+  requestBody: {
+    description: 'Edit project',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            description: {
+              type: 'string',
+            },
+            sponsor: {
+              type: 'string',
+            },
+            resultIds: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+            },
+            persons: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                  role: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      schema: {
+        type: 'number',
+      },
+      required: true,
+    },
+  ],
+};

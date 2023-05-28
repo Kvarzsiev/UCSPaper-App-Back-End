@@ -10,11 +10,15 @@ export async function getProjects(req: Request, res: Response, next: NextFunctio
   const projectRepository = await AppDataSource.getRepository(Project);
 
   try {
-    const projects = await projectRepository.find({
-      select: ['id', 'description', 'sponsor'],
-      relations: ['personProjects', 'results'],
-    });
-    res.status(200).send(projects);
+    const projects = await projectRepository
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.results', 'results')
+      .leftJoinAndSelect('project.personProjects', 'personProject')
+      .leftJoinAndSelect('personProject.person', 'person')
+      .getMany();
+
+    const projectsResponse = projects.map((project) => buildResponseProject(project));
+    res.status(200).send(projectsResponse);
   } catch (err) {
     const customError = new CustomError(400, 'Raw', 'Cant retrieve list of projects', null, err);
     return next(customError);
@@ -42,18 +46,7 @@ export async function getProjectById(req: Request, res: Response, next: NextFunc
       return next(customError);
     }
 
-    const responseProject = {
-      id: project.id,
-      description: project.description,
-      sponsor: project.sponsor,
-      startDate: project.startDate,
-      finishedDate: project.finishDate,
-      isFinished: project.isFinished,
-      results: project.results,
-      persons: project.personProjects.map((personProject) => personProject.person),
-      created_at: project.created_at,
-      updated_at: project.updated_at,
-    };
+    const responseProject = buildResponseProject(project);
 
     res.status(200).send(responseProject);
   } catch (err) {
@@ -75,6 +68,7 @@ export async function createProject(req: Request, res: Response, next: NextFunct
     project.sponsor = sponsor;
     project.startDate = parseDateStr(createDate);
     project.finishDate = parseDateStr(finishDate, true);
+    project.isFinished = isFinished;
 
     await projectRepository.save(project);
     res.status(201).send(project);
@@ -85,8 +79,10 @@ export async function createProject(req: Request, res: Response, next: NextFunct
 }
 
 export async function editProject(req: Request, res: Response, next: NextFunction) {
+  console.log(req);
+
   const id = Number(req.params.id);
-  const { description, sponsor, persons } = req.body;
+  const { description, sponsor, startDate, finishDate, isFinished, persons, resultIds } = req.body;
 
   const projectRepository = await AppDataSource.getRepository(Project);
   const personProjectRepository = await AppDataSource.getRepository(PersonProject);
@@ -101,18 +97,31 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
     });
 
     if (persons?.length > 0) {
-      persons.forEach(async (person) => {
-        if (!project.personProjects.some((pp) => pp.id === person.id)) {
+      for (const person of persons) {
+        if (!project.personAlreadyMember(person.id)) {
+          console.log(person);
           const newPersonProject = new PersonProject();
           newPersonProject.project_id = id;
           newPersonProject.person_id = person.id;
           newPersonProject.role = person.role;
 
           await personProjectRepository.save(newPersonProject);
+          project.personProjects.push(newPersonProject);
+          console.log(project.personProjects);
         }
-      });
+      }
     }
-    await projectRepository.save(project);
+
+    project.sponsor = sponsor || project.sponsor;
+    project.startDate = startDate || project.startDate;
+    project.finishDate = finishDate || project.finishDate;
+    project.isFinished = isFinished || project.isFinished;
+    project.description = description || project.description;
+
+    console.log(project);
+
+    const responseProject = buildResponseProject(project);
+    await projectRepository.save(responseProject);
     res.status(201).send(project);
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
@@ -126,4 +135,19 @@ function parseDateStr(dateStr: string, returnNullIfInvalid: boolean = false): Da
     return returnNullIfInvalid ? null : new Date();
   }
   return new Date(ticks);
+}
+
+function buildResponseProject(project: Project) {
+  return {
+    id: project.id,
+    description: project.description,
+    sponsor: project.sponsor,
+    startDate: project.startDate,
+    finishedDate: project.finishDate,
+    isFinished: project.isFinished,
+    results: project.results,
+    persons: project.personProjects.map((personProject) => personProject.person),
+    created_at: project.created_at,
+    updated_at: project.updated_at,
+  };
 }

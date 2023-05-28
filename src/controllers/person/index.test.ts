@@ -25,9 +25,9 @@ describe('Person', () => {
     personRepository = await AppDataSource.getRepository(Person);
   });
 
-	after(async () => {
-		await AppDataSource.destroy();
-	});
+  after(async () => {
+    await AppDataSource.destroy();
+  });
 
   beforeEach(async () => {
     await personRepository.save(person);
@@ -86,6 +86,20 @@ describe('Person', () => {
 
       expect(res.status).to.equal(400);
       await personRepository.delete(firstPerson.id);
+    });
+  });
+
+  describe('PUT /persons', () => {
+    it('should return edited person with new fields', async () => {
+      const res = await request(app).put(`/persons/${person.id}`).set('ContentType', 'application/json').send({
+        name: 'test person edited',
+        email: 'edited@test.com',
+        institution: 'edited',
+      });
+
+      expect(res.body.name).to.equal('test person edited');
+      expect(res.body.email).to.equal('edited@test.com');
+      expect(res.body.institution).to.equal('edited');
     });
   });
 });

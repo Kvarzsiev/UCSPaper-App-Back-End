@@ -75,3 +75,63 @@ export const getPerson = {
     },
   ],
 };
+
+export const postProject = {
+  tags: ['Project'],
+  responses: {
+    '201': {
+      description: 'Create a new project',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              description: {
+                type: 'string',
+              },
+              sponsor: {
+                type: 'string',
+              },
+              results: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    desciption: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  produces: ['application/json'],
+  requestBody: {
+    description: 'New project ',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            description: {
+              type: 'string',
+            },
+            sponsor: {
+              type: 'string',
+            },
+            resultIds: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};

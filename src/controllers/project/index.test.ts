@@ -7,9 +7,13 @@ import { AppDataSource } from 'database/dataSource';
 import { Project } from 'entities/Project/Project';
 
 import { app } from '../../';
+import { Person } from 'entities/Person/Person';
+import { PersonProject } from 'entities/PersonProject/PersonProject';
 
 describe('Project', () => {
   let projectRepository: Repository<Project>;
+  let personRepository: Repository<Person>;
+  let personProjectRepository: Repository<PersonProject>;
 
   const projectDescription: string = 'test project';
   const projectSponsor: string = 'test sponsor';
@@ -18,9 +22,20 @@ describe('Project', () => {
   project.description = projectDescription;
   project.sponsor = projectSponsor;
 
+  const personEmail: string = 'test@example.com';
+  const personName: string = 'Test Person';
+  const personInstitution: string = 'Test Institution';
+
+  const person = new Person();
+  person.email = personEmail;
+  person.name = personName;
+  person.institution = personInstitution;
+
   before(async () => {
     await AppDataSource.initialize();
     projectRepository = await AppDataSource.getRepository(Project);
+    personRepository = await AppDataSource.getRepository(Person);
+    personProjectRepository = await AppDataSource.getRepository(PersonProject);
   });
 
   after(async () => {
@@ -29,9 +44,12 @@ describe('Project', () => {
 
   beforeEach(async () => {
     await projectRepository.save(project);
+    await personRepository.save(person);
   });
 
   afterEach(async () => {
+    await personProjectRepository.clear(); // clears all person projects links
+    await personRepository.delete(person.id);
     await projectRepository.delete(project.id);
   });
 
@@ -61,13 +79,27 @@ describe('Project', () => {
         sponsor: 'test sponsor',
         createdDate: new Date(),
         finishDate: null,
-        isFinish: false
+        isFinish: false,
       });
 
       console.log(res.body);
       expect(res.status).to.equal(201);
       expect(res.body.description).to.equal('test project');
       await projectRepository.delete(res.body.id);
+    });
+  });
+
+  describe('PUT /projects', () => {
+    it('should create a personProject link when a person is provided', async () => {
+      const res = await request(app)
+        .put(`/projects/${project.id}`)
+        .set('ContentType', 'application/json')
+        .send({
+          persons: [{ id: person.id, role: 'member' }],
+        });
+
+      console.log(res.body);
+      expect(res.body.personProjects[0].person_id).to.equal(person.id);
     });
   });
 });
