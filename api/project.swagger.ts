@@ -135,7 +135,7 @@ export const postProject = {
 
 export const putProject = {
   tags: ['Project'],
-  reponses: {
+  responses: {
     '200': {
       description: 'Project.',
       content: {
