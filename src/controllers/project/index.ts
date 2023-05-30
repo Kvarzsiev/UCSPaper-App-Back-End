@@ -5,6 +5,7 @@ import { Person } from 'entities/Person/Person';
 import { Project } from 'entities/Project/Project';
 import { CustomError } from 'utils/customError';
 import { PersonProject } from 'entities/PersonProject/PersonProject';
+import { Result } from 'entities/Result/Result';
 
 export async function getProjects(req: Request, res: Response, next: NextFunction) {
   const projectRepository = await AppDataSource.getRepository(Project);
@@ -63,6 +64,7 @@ export async function createProject(req: Request, res: Response, next: NextFunct
   const projectRepository = await AppDataSource.getRepository(Project);
 
   try {
+    //TODO: move this to ProjectService
     const project = new Project();
     project.description = description;
     project.sponsor = sponsor;
@@ -79,13 +81,12 @@ export async function createProject(req: Request, res: Response, next: NextFunct
 }
 
 export async function editProject(req: Request, res: Response, next: NextFunction) {
-  console.log(req);
-
   const id = Number(req.params.id);
   const { description, sponsor, startDate, finishDate, isFinished, persons, resultIds } = req.body;
 
   const projectRepository = await AppDataSource.getRepository(Project);
   const personProjectRepository = await AppDataSource.getRepository(PersonProject);
+  const resultRepository = await AppDataSource.getRepository(Result);
 
   try {
     const project = await projectRepository.findOne({
@@ -99,7 +100,7 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
     if (persons?.length > 0) {
       for (const person of persons) {
         if (!project.personAlreadyMember(person.id)) {
-          console.log(person);
+          //TODO: move this to PersonProjectService
           const newPersonProject = new PersonProject();
           newPersonProject.project_id = id;
           newPersonProject.person_id = person.id;
@@ -107,18 +108,37 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
 
           await personProjectRepository.save(newPersonProject);
           project.personProjects.push(newPersonProject);
-          console.log(project.personProjects);
         }
       }
     }
 
+    console.log(resultIds);
+    if (resultIds?.length > 0) {
+      for (const resultId of resultIds) {
+        if (project.hasResult(resultId)) {
+          try {
+            //TODO: move this to ResultService
+            const newResult = await resultRepository.findOneByOrFail({
+              id: resultId,
+            });
+            project.results.push(newResult);
+          } catch (err) {
+            const customError = new CustomError(400, 'Raw', `Provided result id could not be found`, null, [err]);
+            return next(customError);
+          }
+        } else {
+          const customError = new CustomError(400, 'Raw', `Provided result already in the list of results`);
+          return next(customError);
+        }
+      }
+    }
+
+    //bruh
     project.sponsor = sponsor || project.sponsor;
     project.startDate = startDate || project.startDate;
     project.finishDate = finishDate || project.finishDate;
     project.isFinished = isFinished || project.isFinished;
     project.description = description || project.description;
-
-    console.log(project);
 
     const responseProject = buildResponseProject(project);
     await projectRepository.save(responseProject);
