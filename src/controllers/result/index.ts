@@ -52,8 +52,6 @@ export async function getResultById(req: Request, res: Response, next: NextFunct
 export async function createResult(req: Request, res: Response, next: NextFunction) {
   const { description, projectId, members } = req.body;
 
-  console.log(members);
-
   const projectRepository = await AppDataSource.getRepository(Project);
   const resultRepository = await AppDataSource.getRepository(Result);
 
@@ -110,8 +108,6 @@ async function getPersonsFromProject(projectId: number, personIds: number[]): Pr
 
   for (const personId of personIds) {
     const personProject = await getPersonProject(projectId, personId);
-
-    console.log(personProject);
 
     if (!personProject) {
       throw new Error('A provided member does not exist or is not a member of the project');

@@ -64,7 +64,6 @@ describe('Person', () => {
         institution: 'test',
       });
 
-      console.log(res.body);
       expect(res.status).to.equal(201);
       expect(res.body.email).to.equal('postTestPerson@test.com');
       await personRepository.delete(res.body.id);

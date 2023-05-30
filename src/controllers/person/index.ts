@@ -52,8 +52,6 @@ export async function getPersonById(req: Request, res: Response, next: NextFunct
 export async function createPerson(req: Request, res: Response, next: NextFunction) {
   const { name, email, institution } = req.body;
 
-  console.log(req);
-
   const personRepository = await AppDataSource.getRepository(Person);
 
   try {

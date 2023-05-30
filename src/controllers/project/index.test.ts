@@ -82,7 +82,6 @@ describe('Project', () => {
         isFinish: false,
       });
 
-      console.log(res.body);
       expect(res.status).to.equal(201);
       expect(res.body.description).to.equal('test project');
       await projectRepository.delete(res.body.id);
@@ -98,7 +97,6 @@ describe('Project', () => {
           persons: [{ id: person.id, role: 'member' }],
         });
 
-      console.log(res.body);
       expect(res.body.personProjects[0].person_id).to.equal(person.id);
     });
   });
