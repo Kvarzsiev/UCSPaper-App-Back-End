@@ -16,7 +16,7 @@ export const getPersons = {
                 email: {
                   type: 'string',
                 },
-                instituition: {
+                institution: {
                   type: 'string',
                 },
               },
@@ -44,20 +44,9 @@ export const getPerson = {
               email: {
                 type: 'string',
               },
-              instituition: {
+              institution: {
                 type: 'string',
               },
-              //   personProjects: {
-              //     type: 'object',
-              //     properties: {
-              //       project: {
-              //         type: 'object',
-              //         properties: {
-
-              //         },
-              //       },
-              //     },
-              //   },
             },
           },
         },
@@ -76,32 +65,25 @@ export const getPerson = {
   ],
 };
 
-export const postProject = {
-  tags: ['Project'],
+export const postPerson = {
+  tags: ['Person'],
+  produces: ['application/json'],
   responses: {
     '201': {
-      description: 'Create a new project',
+      description: 'Create a new person',
       content: {
         'application/json': {
           schema: {
             type: 'object',
             properties: {
-              description: {
+              name: {
                 type: 'string',
               },
-              sponsor: {
+              email: {
                 type: 'string',
               },
-              results: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    desciption: {
-                      type: 'string',
-                    },
-                  },
-                },
+              institution: {
+                type: 'string',
               },
             },
           },
@@ -109,25 +91,21 @@ export const postProject = {
       },
     },
   },
-  produces: ['application/json'],
   requestBody: {
-    description: 'New project ',
+    description: 'New person',
     content: {
       'application/json': {
         schema: {
           type: 'object',
           properties: {
-            description: {
+            name: {
               type: 'string',
             },
-            sponsor: {
+            email: {
               type: 'string',
             },
-            resultIds: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
+            institution: {
+              type: 'string',
             },
           },
         },
