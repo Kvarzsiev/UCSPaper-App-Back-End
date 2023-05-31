@@ -114,10 +114,10 @@ export const postResult = {
             description: {
               type: 'string',
             },
-            sponsor: {
+            projectId: {
               type: 'string',
             },
-            resultIds: {
+            members: {
               type: 'array',
               items: {
                 type: 'string',
