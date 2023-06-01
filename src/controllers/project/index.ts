@@ -166,7 +166,7 @@ function buildResponseProject(project: Project) {
     finishedDate: project.finishDate,
     isFinished: project.isFinished,
     results: project.results,
-    persons: project.personProjects.map((personProject) => personProject.person),
+    persons: project.personProjects.map((personProject) => ({ ...personProject.person, role: personProject.role })),
     created_at: project.created_at,
     updated_at: project.updated_at,
   };
