@@ -1,7 +1,6 @@
-import { getProjects, getProject, postProject, putProject } from './api/project.swagger';
-import { getPersons, getPerson } from './api/person.swagger';
+import { getProjects, getProject, postProject, putProject, removeProjectPersons } from './api/project.swagger';
+import { getPersons, getPerson, postPerson } from './api/person.swagger';
 import { getResults, getResult, postResult } from './api/result.swagger';
-import { createPerson } from 'controllers/person';
 
 export const swaggerDocument = {
   openapi: '3.0.1',
@@ -21,7 +20,7 @@ export const swaggerDocument = {
   paths: {
     '/persons': {
       get: getPersons,
-      post: createPerson,
+      post: postPerson,
     },
     '/persons/{id}': {
       get: getPerson,
@@ -34,6 +33,9 @@ export const swaggerDocument = {
       get: getProject,
       put: putProject,
     },
+    '/projects/editPersons/{id}': {
+      delete: removeProjectPersons,
+    },  
     '/results': {
       get: getResults,
       post: postResult,

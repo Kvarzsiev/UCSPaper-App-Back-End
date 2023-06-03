@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 
 export const AppDataSource = new DataSource({
-  type: 'mysql',
+  type: 'mariadb',
   host: process.env.MYSQL_HOST || '127.0.0.1',
   port: Number(process.env.MYSQL_PORT || '3306'),
   username: process.env.MYSQL_USER || 'root',

@@ -224,3 +224,149 @@ export const putProject = {
     },
   ],
 };
+
+export const removeProjectPersons = {
+  tags: ['Project'],
+  responses: {
+    '200': {
+    description: 'Persons to remove from project.',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            description: {
+              type: 'string',
+            },
+            sponsor: {
+              type: 'string',
+            },
+            resultIds: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+            },
+            persons: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                  role: {
+                    type: 'string',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    },
+  },
+  produces: ['application/json'],
+  requestBody: {
+    description: 'Edit project',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              personsIds: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                }
+              },
+            },
+          },
+        },
+      },
+  },
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      schema: {
+        type: 'number',
+      },
+      required: true,
+    },
+  ],
+};
+
+export const editProjectPersons = {
+  tags: ['Project'],
+  responses: {
+    '200': {
+      description: 'Edited project.',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              description: {
+                type: 'string',
+              },
+              sponsor: {
+                type: 'string',
+              },
+              resultIds: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              persons: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: {
+                      type: 'string',
+                    },
+                    role: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  produces: ['application/json'],
+  requestBody: {
+    description: 'Edit project',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            personsIds: {
+              type: 'array',
+              items: {
+                type: 'string',
+              }
+            },
+          },
+        },
+      },
+    },
+  },
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      schema: {
+        type: 'number',
+      },
+      required: true,
+    },
+  ],
+};
