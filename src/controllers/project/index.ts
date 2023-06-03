@@ -6,20 +6,14 @@ import { Project } from 'entities/Project/Project';
 import { CustomError } from 'utils/customError';
 import { PersonProject } from 'entities/PersonProject/PersonProject';
 import { Result } from 'entities/Result/Result';
+import { fetchProjectWithRelations, fetchProjects, fetchRawProject, saveProject } from 'services/project';
 
 export async function getProjects(req: Request, res: Response, next: NextFunction) {
-  const projectRepository = await AppDataSource.getRepository(Project);
-
   try {
-    const projects = await projectRepository
-      .createQueryBuilder('project')
-      .leftJoinAndSelect('project.results', 'results')
-      .leftJoinAndSelect('project.personProjects', 'personProject')
-      .leftJoinAndSelect('personProject.person', 'person')
-      .getMany();
-
-    const projectsResponse = projects.map((project) => buildResponseProject(project));
-    res.status(200).send(projectsResponse);
+    await fetchProjects().then((projects) => {
+      const projectsResponse = projects.map((project) => buildResponseProject(project));
+      res.status(200).send(projectsResponse);
+    });
   } catch (err) {
     const customError = new CustomError(400, 'Raw', 'Cant retrieve list of projects', null, err);
     return next(customError);
@@ -29,27 +23,17 @@ export async function getProjects(req: Request, res: Response, next: NextFunctio
 export async function getProjectById(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
 
-  const projectRepository = await AppDataSource.getRepository(Project);
-
   try {
-    const project = await projectRepository
-      .createQueryBuilder('project')
-      .leftJoinAndSelect('project.results', 'results')
-      .leftJoinAndSelect('project.personProjects', 'personProject')
-      .leftJoinAndSelect('personProject.person', 'person')
-      .where('project.id = :id', {
-        id: id,
-      })
-      .getOne();
+    await fetchProjectWithRelations(id).then((project) => {
+      if (!project) {
+        const customError = new CustomError(404, 'Not Found', 'Project not found');
+        return next(customError);
+      }
 
-    if (!project) {
-      const customError = new CustomError(404, 'Not Found', 'Project not found');
-      return next(customError);
-    }
+      const responseProject = buildResponseProject(project);
 
-    const responseProject = buildResponseProject(project);
-
-    res.status(200).send(responseProject);
+      res.status(200).send(responseProject);
+    });
   } catch (err) {
     console.error(err);
 
@@ -64,7 +48,6 @@ export async function createProject(req: Request, res: Response, next: NextFunct
   const projectRepository = await AppDataSource.getRepository(Project);
 
   try {
-    //TODO: move this to ProjectService
     const project = new Project();
     project.description = description;
     project.sponsor = sponsor;
@@ -85,39 +68,28 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
   const { description, sponsor, startDate, finishDate, isFinished, persons, resultIds } = req.body;
 
   const projectRepository = await AppDataSource.getRepository(Project);
-  const personProjectRepository = await AppDataSource.getRepository(PersonProject);
   const resultRepository = await AppDataSource.getRepository(Result);
 
   try {
-    const project = await projectRepository.findOne({
-      where: {
-        id: id,
-      },
-      select: ['id', 'description', 'sponsor'],
-      relations: ['personProjects', 'results'],
-    });
+    const project = await fetchRawProject(id);
+
+    if (!project) {
+      const customError = new CustomError(404, 'Not Found', 'Project not found');
+      return next(customError);
+    }
 
     if (persons?.length > 0) {
       for (const person of persons) {
         if (!project.personAlreadyMember(person.id)) {
-          //TODO: move this to PersonProjectService
-          const newPersonProject = new PersonProject();
-          newPersonProject.project_id = id;
-          newPersonProject.person_id = person.id;
-          newPersonProject.role = person.role;
-
-          await personProjectRepository.save(newPersonProject);
-          project.personProjects.push(newPersonProject);
+          await project.addPersonProject(person.id, person.role);
         }
       }
     }
 
-    console.log(resultIds);
     if (resultIds?.length > 0) {
       for (const resultId of resultIds) {
         if (project.hasResult(resultId)) {
           try {
-            //TODO: move this to ResultService
             const newResult = await resultRepository.findOneByOrFail({
               id: resultId,
             });
@@ -140,9 +112,9 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
     project.isFinished = isFinished || project.isFinished;
     project.description = description || project.description;
 
+    await saveProject(project);
     const responseProject = buildResponseProject(project);
-    await projectRepository.save(responseProject);
-    res.status(201).send(project);
+    res.status(201).send(responseProject);
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
     return next(customError);
