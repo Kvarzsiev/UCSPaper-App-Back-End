@@ -12,6 +12,8 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
+import { Collaborator } from 'entities/types';
+import { savePersonProject } from 'services/personProject';
 
 @Entity('Project')
 export class Project {
@@ -57,5 +59,19 @@ export class Project {
 
   personAlreadyMember(personId: number): Boolean {
     return this.personProjects.some((personProject) => personProject.id === personId);
+  }
+
+  async addPersonProject(personId: number, personRole: string): Promise<void> {
+    const newPersonProject = new PersonProject();
+    newPersonProject.project_id = this.id;
+    newPersonProject.person_id = personId;
+
+    if (personRole == Collaborator.MEMBER || personRole == Collaborator.COORDINATOR) {
+      newPersonProject.role = personRole;
+    } else {
+      newPersonProject.role = Collaborator.MEMBER;
+    }
+
+    this.personProjects.push(await savePersonProject(newPersonProject));
   }
 }
