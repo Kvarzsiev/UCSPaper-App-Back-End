@@ -18,3 +18,10 @@ export async function savePersonProject(personProject: PersonProject): Promise<P
   const personProjectRepository: Repository<PersonProject> = await AppDataSource.getRepository(PersonProject);
   return personProjectRepository.save(personProject);
 }
+
+export async function deletePersonProject(personProject: PersonProject): Promise<void> {
+  const personProjectRepository: Repository<PersonProject> = await AppDataSource.getRepository(PersonProject);
+  personProjectRepository.delete({
+    id: personProject.id,
+  });
+}

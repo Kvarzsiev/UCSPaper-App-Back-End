@@ -7,6 +7,7 @@ import { CustomError } from 'utils/customError';
 import { PersonProject } from 'entities/PersonProject/PersonProject';
 import { Result } from 'entities/Result/Result';
 import { fetchProjectWithRelations, fetchProjects, fetchRawProject, saveProject } from 'services/project';
+import { fetchRawResult } from 'services/result';
 
 export async function getProjects(req: Request, res: Response, next: NextFunction) {
   try {
@@ -67,9 +68,6 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
   const id = Number(req.params.id);
   const { description, sponsor, startDate, finishDate, isFinished, persons, resultIds } = req.body;
 
-  const projectRepository = await AppDataSource.getRepository(Project);
-  const resultRepository = await AppDataSource.getRepository(Result);
-
   try {
     const project = await fetchRawProject(id);
 
@@ -78,21 +76,11 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
       return next(customError);
     }
 
-    if (persons?.length > 0) {
-      for (const person of persons) {
-        if (!project.personAlreadyMember(person.id)) {
-          await project.addPersonProject(person.id, person.role);
-        }
-      }
-    }
-
     if (resultIds?.length > 0) {
       for (const resultId of resultIds) {
         if (project.hasResult(resultId)) {
           try {
-            const newResult = await resultRepository.findOneByOrFail({
-              id: resultId,
-            });
+            const newResult = await fetchRawResult(resultId);
             project.results.push(newResult);
           } catch (err) {
             const customError = new CustomError(400, 'Raw', `Provided result id could not be found`, null, [err]);
@@ -105,7 +93,6 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
       }
     }
 
-    //bruh
     project.sponsor = sponsor || project.sponsor;
     project.startDate = startDate || project.startDate;
     project.finishDate = finishDate || project.finishDate;
@@ -117,6 +104,96 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
     res.status(201).send(responseProject);
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
+    return next(customError);
+  }
+}
+
+export async function editProjectPersons(req: Request, res: Response, next: NextFunction) {
+  const id = Number(req.params.id);
+  const { persons } = req.body;
+
+  try {
+    const project = await fetchRawProject(id);
+
+    if (!project) {
+      const customError = new CustomError(404, 'Not Found', 'Project not found');
+      return next(customError);
+    }
+
+    if (persons?.length > 0) {
+      await project.addPersonsToProject(persons);
+    }
+
+    await saveProject(project);
+    const responseProject = buildResponseProject(await fetchProjectWithRelations(id));
+    res.status(201).send(responseProject);
+  } catch (err) {
+    const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
+    return next(customError);
+  }
+}
+
+export async function deleteProjectPersons(req: Request, res: Response, next: NextFunction) {
+  const id = Number(req.params.id);
+  const { personsIds } = req.body;
+
+  console.log(req);
+
+  try {
+    const project = await fetchRawProject(id);
+
+    if (!project) {
+      const customError = new CustomError(404, 'Not Found', 'Project not found');
+      return next(customError);
+    }
+
+    if (personsIds?.length > 0) {
+      for (const personId of personsIds) {
+        try {
+          await project.removePersonToProject(personId);
+        } catch (err) {
+          const customError = new CustomError(400, 'Raw', err.message, null, [err]);
+          return next(customError);
+        }
+      }
+    }
+
+    console.log(await fetchProjectWithRelations(id));
+    const responseProject = buildResponseProject(await fetchProjectWithRelations(id));
+    res.status(201).send(responseProject);
+  } catch (err) {
+    const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
+    return next(customError);
+  }
+}
+
+export async function editProjectResults(req: Request, res: Response, next: NextFunction) {
+  const id = Number(req.params.id);
+  const { resultIds } = req.body;
+
+  try {
+    const project = await fetchRawProject(id);
+
+    if (!project) {
+      const customError = new CustomError(404, 'Not Found', 'Project not found');
+      return next(customError);
+    }
+
+    if (resultIds?.length > 0) {
+      for (const resultId of resultIds) {
+        try {
+          await project.addResultToProject(resultId);
+        } catch (err) {
+          const customError = new CustomError(400, 'Raw', err.message, null, [err]);
+          return next(customError);
+        }
+      }
+    }
+
+    const responseProject = buildResponseProject(project);
+    res.status(201).send(responseProject);
+  } catch (err) {
+    const customError = new CustomError(400, 'Raw', `Could not create project`, null, [err]);
     return next(customError);
   }
 }
