@@ -135,6 +135,7 @@ export const postProject = {
 
 export const putProject = {
   tags: ['Project'],
+  produces: ['application/json'],
   responses: {
     '200': {
       description: 'Project.',
@@ -174,7 +175,6 @@ export const putProject = {
       },
     },
   },
-  produces: ['application/json'],
   requestBody: {
     description: 'Edit project',
     content: {
@@ -229,80 +229,7 @@ export const removeProjectPersons = {
   tags: ['Project'],
   responses: {
     '200': {
-    description: 'Persons to remove from project.',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'object',
-          properties: {
-            description: {
-              type: 'string',
-            },
-            sponsor: {
-              type: 'string',
-            },
-            resultIds: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-            },
-            persons: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'string',
-                  },
-                  role: {
-                    type: 'string',
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    },
-  },
-  produces: ['application/json'],
-  requestBody: {
-    description: 'Edit project',
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              personsIds: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                }
-              },
-            },
-          },
-        },
-      },
-  },
-  parameters: [
-    {
-      in: 'path',
-      name: 'id',
-      schema: {
-        type: 'number',
-      },
-      required: true,
-    },
-  ],
-};
-
-export const editProjectPersons = {
-  tags: ['Project'],
-  responses: {
-    '200': {
-      description: 'Edited project.',
+      description: 'Persons to remove from project.',
       content: {
         'application/json': {
           schema: {
@@ -352,7 +279,88 @@ export const editProjectPersons = {
               type: 'array',
               items: {
                 type: 'string',
-              }
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      schema: {
+        type: 'number',
+      },
+      required: true,
+    },
+  ],
+};
+
+export const editProjectPersons = {
+  tags: ['Project'],
+  produces: ['application/json'],
+  responses: {
+    '200': {
+      description: 'Edited project.',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              description: {
+                type: 'string',
+              },
+              sponsor: {
+                type: 'string',
+              },
+              resultIds: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              persons: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: {
+                      type: 'string',
+                    },
+                    role: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  requestBody: {
+    description: 'Project persons to add',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            persons: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                  role: {
+                    type: 'string',
+                  },
+                },
+              },
             },
           },
         },
