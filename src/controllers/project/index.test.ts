@@ -91,13 +91,14 @@ describe('Project', () => {
   describe('PUT /projects', () => {
     it('should create a personProject link when a person is provided', async () => {
       const res = await request(app)
-        .put(`/projects/${project.id}`)
+        .put(`/projects/persons/${project.id}`)
         .set('ContentType', 'application/json')
         .send({
           persons: [{ id: person.id, role: 'member' }],
         });
 
-      expect(res.body.personProjects[0].person_id).to.equal(person.id);
+      console.log(res.body);
+      expect(res.body.persons[0].id).to.equal(person.id);
     });
   });
 });

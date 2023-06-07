@@ -124,7 +124,6 @@ export async function editProjectPersons(req: Request, res: Response, next: Next
       await project.addPersonsToProject(persons);
     }
 
-    await saveProject(project);
     const responseProject = buildResponseProject(await fetchProjectWithRelations(id));
     res.status(201).send(responseProject);
   } catch (err) {
