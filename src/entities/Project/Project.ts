@@ -26,6 +26,12 @@ export class Project {
   @Column({
     nullable: true,
   })
+  title: string;
+
+  @Column({
+    type: "text",
+    nullable: true,
+  })
   description: string;
 
   @Column({

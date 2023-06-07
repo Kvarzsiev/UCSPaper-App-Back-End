@@ -69,7 +69,7 @@ export async function createResult(req: Request, res: Response, next: NextFuncti
 
     res.status(201).send(await saveResult(result));
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Could not create result`, null, err);
+    const customError = new CustomError(400, 'Raw', `Could not create result`, null, [err]);
     return next(customError);
   }
 }

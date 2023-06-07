@@ -114,18 +114,24 @@ export const postProject = {
         schema: {
           type: 'object',
           properties: {
+            title: {
+              type: "string",
+            },
             description: {
               type: 'string',
             },
             sponsor: {
               type: 'string',
             },
-            resultIds: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
+            startDate: {
+              type: "date",
             },
+            finishDate: {
+              type: "date",
+            },
+            isFinished: {
+              type: "boolean",
+            }
           },
         },
       },
