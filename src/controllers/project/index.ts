@@ -44,12 +44,13 @@ export async function getProjectById(req: Request, res: Response, next: NextFunc
 }
 
 export async function createProject(req: Request, res: Response, next: NextFunction) {
-  const { description, sponsor, createDate, finishDate, isFinished } = req.body;
+  const { title, description, sponsor, createDate, finishDate, isFinished } = req.body;
 
   const projectRepository = await AppDataSource.getRepository(Project);
 
   try {
     const project = new Project();
+    project.title = title;
     project.description = description;
     project.sponsor = sponsor;
     project.startDate = parseDateStr(createDate);
@@ -66,7 +67,7 @@ export async function createProject(req: Request, res: Response, next: NextFunct
 
 export async function editProject(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
-  const { description, sponsor, startDate, finishDate, isFinished, persons, resultIds } = req.body;
+  const { title, description, sponsor, startDate, finishDate, isFinished } = req.body;
 
   try {
     const project = await fetchRawProject(id);
@@ -76,23 +77,7 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
       return next(customError);
     }
 
-    if (resultIds?.length > 0) {
-      for (const resultId of resultIds) {
-        if (project.hasResult(resultId)) {
-          try {
-            const newResult = await fetchRawResult(resultId);
-            project.results.push(newResult);
-          } catch (err) {
-            const customError = new CustomError(400, 'Raw', `Provided result id could not be found`, null, [err]);
-            return next(customError);
-          }
-        } else {
-          const customError = new CustomError(400, 'Raw', `Provided result already in the list of results`);
-          return next(customError);
-        }
-      }
-    }
-
+    project.title = title || project.title;
     project.sponsor = sponsor || project.sponsor;
     project.startDate = startDate || project.startDate;
     project.finishDate = finishDate || project.finishDate;
