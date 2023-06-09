@@ -1,13 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
 import { AppDataSource } from 'database/dataSource';
+import { NextFunction, Request, Response } from 'express';
 
-import { Person } from 'entities/Person/Person';
 import { Project } from 'entities/Project/Project';
-import { CustomError } from 'utils/customError';
-import { PersonProject } from 'entities/PersonProject/PersonProject';
-import { Result } from 'entities/Result/Result';
 import { fetchProjectWithRelations, fetchProjects, fetchRawProject, saveProject } from 'services/project';
-import { fetchRawResult } from 'services/result';
+import { CustomError } from 'utils/customError';
 
 export async function getProjects(req: Request, res: Response, next: NextFunction) {
   try {
@@ -46,7 +42,7 @@ export async function getProjectById(req: Request, res: Response, next: NextFunc
 export async function createProject(req: Request, res: Response, next: NextFunction) {
   const { title, description, sponsor, createDate, finishDate, isFinished } = req.body;
 
-  const projectRepository = await AppDataSource.getRepository(Project);
+  const projectRepository = AppDataSource.getRepository(Project);
 
   try {
     const project = new Project();

@@ -1,16 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
-import { AppDataSource } from 'database/dataSource';
+import { NextFunction, Request, Response } from 'express';
 
-import { PersonProject } from 'entities/PersonProject/PersonProject';
-import { Result } from 'entities/Result/Result';
-import { Project } from 'entities/Project/Project';
 import { Person } from 'entities/Person/Person';
-import { CustomError } from 'utils/customError';
-import { Repository } from 'typeorm';
+import { Result } from 'entities/Result/Result';
 import { fetchPerson } from 'services/person';
-import { fetchRawResult, fetchResults, saveResult } from 'services/result';
-import { fetchRawProject } from 'services/project';
 import { fetchPersonProject } from 'services/personProject';
+import { fetchRawProject } from 'services/project';
+import { fetchRawResult, fetchResults, saveResult } from 'services/result';
+import { CustomError } from 'utils/customError';
 
 export async function getResults(req: Request, res: Response, next: NextFunction) {
   try {
@@ -25,8 +21,6 @@ export async function getResults(req: Request, res: Response, next: NextFunction
 
 export async function getResultById(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
-
-  const resultRepository = await AppDataSource.getRepository(Result);
 
   try {
     const result = await fetchRawResult(id);
@@ -75,7 +69,7 @@ export async function createResult(req: Request, res: Response, next: NextFuncti
 }
 
 async function getPersonsFromProject(projectId: number, personIds: number[]): Promise<Person[]> {
-  var resultPersons: Person[] = [];
+  const resultPersons: Person[] = [];
 
   for (const personId of personIds) {
     const personProject = await fetchPersonProject(personId, projectId);

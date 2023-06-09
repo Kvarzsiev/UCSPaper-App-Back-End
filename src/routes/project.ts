@@ -8,7 +8,6 @@ import {
   deleteProjectPersons,
   editProjectResults,
 } from 'controllers/project';
-import { CustomError } from 'utils/customError';
 
 const router = Router();
 

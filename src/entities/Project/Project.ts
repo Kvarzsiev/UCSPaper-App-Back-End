@@ -1,22 +1,10 @@
-import { Person } from 'entities/Person/Person';
-import { Result } from 'entities/Result/Result';
 import { PersonProject } from 'entities/PersonProject/PersonProject';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToMany,
-  OneToOne,
-  JoinColumn,
-  OneToMany,
-} from 'typeorm';
+import { Result } from 'entities/Result/Result';
 import { Collaborator } from 'entities/types';
 import { deletePersonProject, fetchPersonProject, savePersonProject } from 'services/personProject';
-import { fetchRawResult } from 'services/result';
-import { CustomError } from 'utils/customError';
 import { saveProject } from 'services/project';
+import { fetchRawResult } from 'services/result';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('Project')
 export class Project {
@@ -29,7 +17,7 @@ export class Project {
   title: string;
 
   @Column({
-    type: "text",
+    type: 'text',
     nullable: true,
   })
   description: string;
@@ -52,7 +40,7 @@ export class Project {
   finishDate: Date;
 
   @Column({ default: false })
-  isFinished: Boolean;
+  isFinished: boolean;
 
   @Column()
   @CreateDateColumn()
@@ -62,11 +50,11 @@ export class Project {
   @UpdateDateColumn()
   updated_at: Date;
 
-  hasResult(resultId: number): Boolean {
+  hasResult(resultId: number): boolean {
     return this.results.some((result) => result.id === resultId);
   }
 
-  personAlreadyMember(personId: number): Boolean {
+  personAlreadyMember(personId: number): boolean {
     return this.personProjects.some((personProject) => personProject.id === personId);
   }
 
