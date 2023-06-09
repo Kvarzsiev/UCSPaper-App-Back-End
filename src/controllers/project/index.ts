@@ -194,6 +194,7 @@ function buildResponseProject(project: Project) {
   return {
     id: project.id,
     description: project.description,
+    title: project.title,
     sponsor: project.sponsor,
     startDate: project.startDate,
     finishedDate: project.finishDate,

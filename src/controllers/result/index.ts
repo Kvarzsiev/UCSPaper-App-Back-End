@@ -78,7 +78,7 @@ async function getPersonsFromProject(projectId: number, personIds: number[]): Pr
   var resultPersons: Person[] = [];
 
   for (const personId of personIds) {
-    const personProject = await fetchPersonProject(projectId, personId);
+    const personProject = await fetchPersonProject(personId, projectId);
 
     if (!personProject) {
       throw new Error('A provided member does not exist or is not a member of the project');
