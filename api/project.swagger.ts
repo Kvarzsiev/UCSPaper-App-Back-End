@@ -10,14 +10,23 @@ export const getProjects = {
             items: {
               type: 'object',
               properties: {
-                name: {
+                title: {
                   type: 'string',
                 },
-                email: {
+                description: {
                   type: 'string',
                 },
-                instituition: {
+                sponsor: {
                   type: 'string',
+                },
+                startDate: {
+                  type: 'date',
+                },
+                finishDate: {
+                  type: 'date',
+                },
+                isFinished: {
+                  type: 'boolean',
                 },
               },
             },
@@ -38,11 +47,23 @@ export const getProject = {
           schema: {
             type: 'object',
             properties: {
+              title: {
+                type: 'string',
+              },
               description: {
                 type: 'string',
               },
               sponsor: {
                 type: 'string',
+              },
+              startDate: {
+                type: 'date',
+              },
+              finishDate: {
+                type: 'date',
+              },
+              isFinished: {
+                type: 'boolean',
               },
               results: {
                 type: 'array',
@@ -52,6 +73,17 @@ export const getProject = {
                     desciption: {
                       type: 'string',
                     },
+                  },
+                },
+              },
+              persons: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    name: { type: 'string' },
+                    email: { type: 'string' },
+                    institution: { type: 'string' },
                   },
                 },
               },
@@ -83,11 +115,23 @@ export const postProject = {
           schema: {
             type: 'object',
             properties: {
+              title: {
+                type: 'string',
+              },
               description: {
                 type: 'string',
               },
               sponsor: {
                 type: 'string',
+              },
+              startDate: {
+                type: 'date',
+              },
+              finishDate: {
+                type: 'date',
+              },
+              isFinished: {
+                type: 'boolean',
               },
               results: {
                 type: 'array',
@@ -97,6 +141,17 @@ export const postProject = {
                     desciption: {
                       type: 'string',
                     },
+                  },
+                },
+              },
+              persons: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    name: { type: 'string' },
+                    email: { type: 'string' },
+                    institution: { type: 'string' },
                   },
                 },
               },
@@ -115,7 +170,7 @@ export const postProject = {
           type: 'object',
           properties: {
             title: {
-              type: "string",
+              type: 'string',
             },
             description: {
               type: 'string',
@@ -124,14 +179,14 @@ export const postProject = {
               type: 'string',
             },
             startDate: {
-              type: "date",
+              type: 'date',
             },
             finishDate: {
-              type: "date",
+              type: 'date',
             },
             isFinished: {
-              type: "boolean",
-            }
+              type: 'boolean',
+            },
           },
         },
       },
@@ -150,11 +205,23 @@ export const putProject = {
           schema: {
             type: 'object',
             properties: {
+              title: {
+                type: 'string',
+              },
               description: {
                 type: 'string',
               },
               sponsor: {
                 type: 'string',
+              },
+              startDate: {
+                type: 'date',
+              },
+              finishDate: {
+                type: 'date',
+              },
+              isFinished: {
+                type: 'boolean',
               },
               results: {
                 type: 'array',
@@ -169,10 +236,13 @@ export const putProject = {
               },
               persons: {
                 type: 'array',
-                properties: {
-                  name: { type: 'string' },
-                  email: { type: 'string' },
-                  institution: { type: 'string' },
+                items: {
+                  type: 'object',
+                  properties: {
+                    name: { type: 'string' },
+                    email: { type: 'string' },
+                    institution: { type: 'string' },
+                  },
                 },
               },
             },
@@ -188,31 +258,23 @@ export const putProject = {
         schema: {
           type: 'object',
           properties: {
+            title: {
+              type: 'string',
+            },
             description: {
               type: 'string',
             },
             sponsor: {
               type: 'string',
             },
-            resultIds: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
+            startDate: {
+              type: 'date',
             },
-            persons: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'string',
-                  },
-                  role: {
-                    type: 'string',
-                  },
-                },
-              },
+            finishDate: {
+              type: 'date',
+            },
+            isFinished: {
+              type: 'boolean',
             },
           },
         },
@@ -241,11 +303,23 @@ export const removeProjectPersons = {
           schema: {
             type: 'object',
             properties: {
+              title: {
+                type: 'string',
+              },
               description: {
                 type: 'string',
               },
               sponsor: {
                 type: 'string',
+              },
+              startDate: {
+                type: 'date',
+              },
+              finishDate: {
+                type: 'date',
+              },
+              isFinished: {
+                type: 'boolean',
               },
               resultIds: {
                 type: 'array',
@@ -259,7 +333,7 @@ export const removeProjectPersons = {
                   type: 'object',
                   properties: {
                     id: {
-                      type: 'string',
+                      type: 'integer',
                     },
                     role: {
                       type: 'string',
@@ -284,7 +358,7 @@ export const removeProjectPersons = {
             personsIds: {
               type: 'array',
               items: {
-                type: 'string',
+                type: 'integer',
               },
             },
           },
@@ -315,17 +389,23 @@ export const editProjectPersons = {
           schema: {
             type: 'object',
             properties: {
+              title: {
+                type: 'string',
+              },
               description: {
                 type: 'string',
               },
               sponsor: {
                 type: 'string',
               },
-              resultIds: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                },
+              startDate: {
+                type: 'date',
+              },
+              finishDate: {
+                type: 'date',
+              },
+              isFinished: {
+                type: 'boolean',
               },
               persons: {
                 type: 'array',
@@ -333,7 +413,7 @@ export const editProjectPersons = {
                   type: 'object',
                   properties: {
                     id: {
-                      type: 'string',
+                      type: 'integer',
                     },
                     role: {
                       type: 'string',
@@ -360,7 +440,7 @@ export const editProjectPersons = {
                 type: 'object',
                 properties: {
                   id: {
-                    type: 'string',
+                    type: 'integer',
                   },
                   role: {
                     type: 'string',
