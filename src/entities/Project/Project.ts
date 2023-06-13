@@ -27,10 +27,10 @@ export class Project {
   })
   sponsor: string;
 
-  @OneToMany(() => Result, (result) => result.project)
+  @OneToMany(() => Result, (result) => result.project, { onDelete: 'CASCADE' })
   results: Result[];
 
-  @OneToMany(() => PersonProject, (personProject) => personProject.project)
+  @OneToMany(() => PersonProject, (personProject) => personProject.project, { onDelete: 'CASCADE' })
   personProjects: PersonProject[];
 
   @Column({ default: null })
@@ -55,27 +55,30 @@ export class Project {
   }
 
   personAlreadyMember(personId: number): boolean {
-    return this.personProjects.some((personProject) => personProject.id === personId);
+    return this.personProjects.some((personProject) => personProject.person_id === personId);
   }
 
-  async addPersonsToProject(persons: { id: number; role: string }[]): Promise<void> {
+  async editMembers(persons: { id: number; role: string }[]): Promise<void> {
     for (const person of persons) {
       if (!this.personAlreadyMember(person.id)) {
-        await this.addPersonToProject(person.id, person.role);
+        console.log('Is member already');
+        await this.addMember(person.id, person.role);
+      } else {
+        await this.editExistingMember(person.id, person.role);
       }
     }
 
     await saveProject(this);
   }
 
-  async addPersonToProject(personId: number, personRole: string): Promise<void> {
+  async addMember(personId: number, personRole: string): Promise<void> {
     try {
       const newPersonProject = new PersonProject();
       newPersonProject.project_id = this.id;
       newPersonProject.person_id = personId;
 
-      if (personRole == Collaborator.MEMBER || personRole == Collaborator.COORDINATOR) {
-        newPersonProject.role = personRole;
+      if (isStringInEnum(personRole, Collaborator)) {
+        newPersonProject.role = personRole as Collaborator;
       } else {
         newPersonProject.role = Collaborator.MEMBER;
       }
@@ -106,4 +109,21 @@ export class Project {
       throw new Error(`Provided person not related to project`);
     }
   }
+
+  async editExistingMember(personId: number, role: string) {
+    const personProject = this.personProjects.find((p) => p.person_id == personId);
+    console.log('Existing member:', personProject);
+
+    if (!isStringInEnum(role, Collaborator)) {
+      throw new Error('Could not edit member');
+    } else {
+      personProject.role = role as Collaborator;
+
+      await savePersonProject(personProject);
+    }
+  }
+}
+
+function isStringInEnum(value: string, enumObj: any): boolean {
+  return Object.values(enumObj).includes(value);
 }

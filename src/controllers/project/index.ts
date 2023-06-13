@@ -73,12 +73,12 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
       return next(customError);
     }
 
-    project.title = title || project.title;
-    project.sponsor = sponsor || project.sponsor;
-    project.startDate = startDate || project.startDate;
-    project.finishDate = finishDate || project.finishDate;
-    project.isFinished = isFinished || project.isFinished;
-    project.description = description || project.description;
+    project.title = title;
+    project.sponsor = sponsor;
+    project.startDate = startDate;
+    project.finishDate = finishDate;
+    project.isFinished = isFinished;
+    project.description = description;
 
     await saveProject(project);
     const responseProject = buildResponseProject(project);
@@ -93,6 +93,8 @@ export async function editProjectPersons(req: Request, res: Response, next: Next
   const id = Number(req.params.id);
   const { persons } = req.body;
 
+  console.log(persons);
+
   try {
     const project = await fetchRawProject(id);
 
@@ -102,11 +104,11 @@ export async function editProjectPersons(req: Request, res: Response, next: Next
     }
 
     if (persons?.length > 0) {
-      await project.addPersonsToProject(persons);
+      await project.editMembers(persons);
     }
 
-    const responseProject = buildResponseProject(await fetchProjectWithRelations(id));
-    res.status(201).send(responseProject);
+    const responseProject = await fetchProjectWithRelations(id);
+    res.status(201).send(buildResponseProject(responseProject));
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
     return next(customError);
@@ -193,7 +195,7 @@ function buildResponseProject(project: Project) {
     title: project.title,
     sponsor: project.sponsor,
     startDate: project.startDate,
-    finishedDate: project.finishDate,
+    finishDate: project.finishDate,
     isFinished: project.isFinished,
     results: project.results,
     persons: project.personProjects.map((personProject) => ({ ...personProject.person, role: personProject.role })),
