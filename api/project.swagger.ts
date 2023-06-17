@@ -293,6 +293,26 @@ export const putProject = {
   ],
 };
 
+export const deleteProject = {
+  tags: ['Project'],
+  produces: ['application/json'],
+  response: {
+    '200': {
+      description: 'Project deleted',
+    },
+  },
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      schema: {
+        type: 'number',
+      },
+      required: true,
+    },
+  ],
+};
+
 export const removeProjectPersons = {
   tags: ['Project'],
   responses: {

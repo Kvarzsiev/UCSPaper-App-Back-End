@@ -25,3 +25,10 @@ export async function saveResult(result: Result): Promise<Result> {
   const resultRepository: Repository<Result> = await AppDataSource.getRepository(Result);
   return resultRepository.save(result);
 }
+
+export async function deleteResult(resultId: number): Promise<void> {
+  const resultRepository: Repository<Result> = await AppDataSource.getRepository(Result);
+  resultRepository.delete({
+    id: resultId,
+  });
+}

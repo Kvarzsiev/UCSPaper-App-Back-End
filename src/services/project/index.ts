@@ -7,8 +7,8 @@ export async function fetchProjects(): Promise<Project[]> {
   return projectRepository
     .createQueryBuilder('project')
     .leftJoinAndSelect('project.results', 'results')
-    .leftJoinAndSelect('project.personProjects', 'personProject')
-    .leftJoinAndSelect('personProject.person', 'person')
+    .leftJoinAndSelect('project.personProjects', 'member')
+    .leftJoinAndSelect('member.person', 'person')
     .getMany();
 }
 
@@ -40,4 +40,16 @@ export async function fetchProjectWithRelations(projectId: number): Promise<Proj
 export async function saveProject(project: Project): Promise<Project> {
   const projectRepository: Repository<Project> = await AppDataSource.getRepository(Project);
   return projectRepository.save(project);
+}
+
+export async function deleteProject(projectId: number): Promise<void> {
+  const projectRepository: Repository<Project> = await AppDataSource.getRepository(Project);
+  await projectRepository
+    .createQueryBuilder('project')
+    .delete()
+    .from(Project)
+    .where('id = :id', {
+      id: projectId,
+    })
+    .execute();
 }

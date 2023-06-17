@@ -25,23 +25,24 @@ export class PersonProject {
   @PrimaryColumn()
   project_id: number;
 
-  @ManyToOne(() => Project, (project) => project.personProjects)
+  @ManyToOne(() => Project, (project) => project.personProjects, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({
-    name: "project_id"
+    name: 'project_id',
   })
   project!: Project;
 
   @ManyToOne(() => Person, (person) => person.personProjects)
   @JoinColumn({
-    name: "person_id"
+    name: 'person_id',
   })
-  person!: Person
+  person!: Person;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: Collaborator,
-    default: Collaborator.MEMBER
+    default: Collaborator.MEMBER,
   })
   role: Collaborator;
-
 }

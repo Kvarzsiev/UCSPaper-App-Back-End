@@ -3,7 +3,7 @@ import { Result } from 'entities/Result/Result';
 import { Collaborator } from 'entities/types';
 import { deletePersonProject, fetchPersonProject, savePersonProject } from 'services/personProject';
 import { saveProject } from 'services/project';
-import { fetchRawResult } from 'services/result';
+import { deleteResult, fetchRawResult } from 'services/result';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('Project')
@@ -112,14 +112,22 @@ export class Project {
 
   async editExistingMember(personId: number, role: string) {
     const personProject = this.personProjects.find((p) => p.person_id == personId);
-    console.log('Existing member:', personProject);
 
     if (!isStringInEnum(role, Collaborator)) {
       throw new Error('Could not edit member');
     } else {
       personProject.role = role as Collaborator;
-
       await savePersonProject(personProject);
+    }
+  }
+
+  async removeResultFromProject(resultId: number) {
+    try {
+      await deleteResult(resultId);
+      this.results = this.results.filter((r) => r.id != resultId);
+      await saveProject(this);
+    } catch (err) {
+      throw new Error(err.message);
     }
   }
 }

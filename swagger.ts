@@ -1,5 +1,13 @@
-import { getProjects, getProject, postProject, putProject, removeProjectPersons, editProjectPersons } from './api/project.swagger';
-import { getPersons, getPerson, postPerson } from './api/person.swagger';
+import {
+  getProjects,
+  getProject,
+  postProject,
+  putProject,
+  removeProjectPersons,
+  editProjectPersons,
+  deleteProject,
+} from './api/project.swagger';
+import { getPersons, getPerson, postPerson, deletePerson } from './api/person.swagger';
 import { getResults, getResult, postResult } from './api/result.swagger';
 
 export const swaggerDocument = {
@@ -24,6 +32,7 @@ export const swaggerDocument = {
     },
     '/persons/{id}': {
       get: getPerson,
+      delete: deletePerson,
     },
     '/projects': {
       get: getProjects,
@@ -32,6 +41,7 @@ export const swaggerDocument = {
     '/projects/{id}': {
       get: getProject,
       put: putProject,
+      delete: deleteProject,
     },
     '/projects/persons/{id}': {
       delete: removeProjectPersons,

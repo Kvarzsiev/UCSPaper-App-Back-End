@@ -2,7 +2,13 @@ import { AppDataSource } from 'database/dataSource';
 import { NextFunction, Request, Response } from 'express';
 
 import { Project } from 'entities/Project/Project';
-import { fetchProjectWithRelations, fetchProjects, fetchRawProject, saveProject } from 'services/project';
+import {
+  fetchProjectWithRelations,
+  fetchProjects,
+  fetchRawProject,
+  saveProject,
+  deleteProject,
+} from 'services/project';
 import { CustomError } from 'utils/customError';
 
 export async function getProjects(req: Request, res: Response, next: NextFunction) {
@@ -12,7 +18,7 @@ export async function getProjects(req: Request, res: Response, next: NextFunctio
       res.status(200).send(projectsResponse);
     });
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', 'Cant retrieve list of projects', null, err);
+    const customError = new CustomError(400, 'Raw', 'Cant retrieve list of projects', null, [err]);
     return next(customError);
   }
 }
@@ -54,9 +60,9 @@ export async function createProject(req: Request, res: Response, next: NextFunct
     project.isFinished = isFinished;
 
     await projectRepository.save(project);
-    res.status(201).send(project);
+    res.status(201).send(await fetchProjectWithRelations(project.id));
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
+    const customError = new CustomError(400, 'Raw', `Could not create project`, null, [err]);
     return next(customError);
   }
 }
@@ -81,10 +87,22 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
     project.description = description;
 
     await saveProject(project);
-    const responseProject = buildResponseProject(project);
+    const responseProject = buildResponseProject(await fetchProjectWithRelations(id));
     res.status(201).send(responseProject);
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
+    const customError = new CustomError(400, 'Raw', `Could not edit project`, null, [err]);
+    return next(customError);
+  }
+}
+
+export async function delProject(req: Request, res: Response, next: NextFunction) {
+  const id = Number(req.params.id);
+
+  try {
+    await deleteProject(id);
+    res.status(200).end();
+  } catch (err) {
+    const customError = new CustomError(400, 'Raw', `Could not delete project`, null, [err]);
     return next(customError);
   }
 }
@@ -92,8 +110,6 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
 export async function editProjectPersons(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
   const { persons } = req.body;
-
-  console.log(persons);
 
   try {
     const project = await fetchRawProject(id);
@@ -107,8 +123,7 @@ export async function editProjectPersons(req: Request, res: Response, next: Next
       await project.editMembers(persons);
     }
 
-    const responseProject = await fetchProjectWithRelations(id);
-    res.status(201).send(buildResponseProject(responseProject));
+    res.status(201).send(buildResponseProject(await fetchProjectWithRelations(id)));
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
     return next(customError);
@@ -118,8 +133,6 @@ export async function editProjectPersons(req: Request, res: Response, next: Next
 export async function deleteProjectPersons(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
   const { personsIds } = req.body;
-
-  console.log(req);
 
   try {
     const project = await fetchRawProject(id);
@@ -140,11 +153,41 @@ export async function deleteProjectPersons(req: Request, res: Response, next: Ne
       }
     }
 
-    console.log(await fetchProjectWithRelations(id));
     const responseProject = buildResponseProject(await fetchProjectWithRelations(id));
     res.status(201).send(responseProject);
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
+    return next(customError);
+  }
+}
+
+export async function deleteProjectResults(req: Request, res: Response, next: NextFunction) {
+  const id = Number(req.params.id);
+  const { resultIds } = req.body;
+
+  try {
+    const project = await fetchRawProject(id);
+
+    if (!project) {
+      const customError = new CustomError(404, 'Not Found', 'Project not found');
+      return next(customError);
+    }
+
+    if (resultIds?.length > 0) {
+      for (const resultId of resultIds) {
+        try {
+          await project.removeResultFromProject(resultId);
+        } catch (err) {
+          const customError = new CustomError(400, 'Raw', err.message, null, [err]);
+          return next(customError);
+        }
+      }
+    }
+
+    const responseProject = buildResponseProject(await fetchProjectWithRelations(id));
+    res.status(201).send(responseProject);
+  } catch (err) {
+    const customError = new CustomError(400, 'Raw', `Could not delete result from project`, null, [err]);
     return next(customError);
   }
 }
@@ -172,7 +215,7 @@ export async function editProjectResults(req: Request, res: Response, next: Next
       }
     }
 
-    const responseProject = buildResponseProject(project);
+    const responseProject = buildResponseProject(await fetchProjectWithRelations(id));
     res.status(201).send(responseProject);
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not create project`, null, [err]);

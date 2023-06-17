@@ -113,3 +113,23 @@ export const postPerson = {
     },
   },
 };
+
+export const deletePerson = {
+  tags: ['Person'],
+  produces: ['application/json'],
+  response: {
+    '200': {
+      description: 'Person deleted',
+    },
+  },
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      schema: {
+        type: 'number',
+      },
+      required: true,
+    },
+  ],
+};

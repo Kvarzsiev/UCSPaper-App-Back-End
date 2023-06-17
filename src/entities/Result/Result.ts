@@ -21,7 +21,7 @@ export class Result {
   })
   description: string;
 
-  @ManyToOne(() => Project, (project) => project.results)
+  @ManyToOne(() => Project, (project) => project.results, { onDelete: 'CASCADE' })
   project: Project;
 
   @ManyToMany(() => Person, (person) => person.results, {

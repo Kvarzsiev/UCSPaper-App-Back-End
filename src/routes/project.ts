@@ -7,6 +7,8 @@ import {
   editProjectPersons,
   deleteProjectPersons,
   editProjectResults,
+  delProject,
+  deleteProjectResults,
 } from 'controllers/project';
 
 const router = Router();
@@ -18,6 +20,7 @@ router.put('/projects/:id', editProject);
 router.put('/projects/persons/:id', editProjectPersons);
 router.delete('/projects/persons/:id', deleteProjectPersons);
 router.put('/projects/results/:id', editProjectResults);
-router.delete('/projects/results/:id', (req, res, next) => {});
+router.delete('/projects/:id', delProject);
+router.delete('/projects/results/:id', deleteProjectResults);
 
 export default router;
