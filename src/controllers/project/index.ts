@@ -125,7 +125,7 @@ export async function editProjectPersons(req: Request, res: Response, next: Next
 
     res.status(201).send(buildResponseProject(await fetchProjectWithRelations(id)));
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Could not create project`, null, err);
+    const customError = new CustomError(400, 'Raw', `Could not edit project`, null, err);
     return next(customError);
   }
 }
@@ -209,7 +209,7 @@ export async function editProjectResults(req: Request, res: Response, next: Next
         try {
           await project.addResultToProject(resultId);
         } catch (err) {
-          const customError = new CustomError(400, 'Raw', err.message, null, [err]);
+          const customError = new CustomError(400, 'General', err.message, null, [err]);
           return next(customError);
         }
       }

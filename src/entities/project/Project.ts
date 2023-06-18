@@ -1,6 +1,6 @@
 import { PersonProject } from 'entities/personProject/PersonProject';
 import { Result } from 'entities/result/Result';
-import { Collaborator } from 'entities/types';
+import { Collaborator } from 'entities/personProject/types';
 import { deletePersonProject, fetchPersonProject, savePersonProject } from 'services/personProject';
 import { saveProject } from 'services/project';
 import { deleteResult, fetchRawResult } from 'services/result';
@@ -72,30 +72,26 @@ export class Project {
   }
 
   async addMember(personId: number, personRole: string): Promise<void> {
-    try {
-      const newPersonProject = new PersonProject();
-      newPersonProject.project_id = this.id;
-      newPersonProject.person_id = personId;
+    const newPersonProject = new PersonProject();
+    newPersonProject.project_id = this.id;
+    newPersonProject.person_id = personId;
 
-      if (isStringInEnum(personRole, Collaborator)) {
-        newPersonProject.role = personRole as Collaborator;
-      } else {
-        newPersonProject.role = Collaborator.MEMBER;
-      }
-
-      this.personProjects.push(await savePersonProject(newPersonProject));
-    } catch (err) {
-      throw new Error(`Provided result id could not be found`);
+    if (isStringInEnum(personRole, Collaborator)) {
+      newPersonProject.role = personRole as Collaborator;
+    } else {
+      newPersonProject.role = Collaborator.MEMBER;
     }
+
+    this.personProjects.push(await savePersonProject(newPersonProject));
   }
 
   async addResultToProject(resultId: number): Promise<void> {
-    try {
-      const newResult = await fetchRawResult(resultId);
+    const newResult = await fetchRawResult(resultId);
+    if (!newResult) {
+      throw new Error('Could not find result');
+    } else {
       this.results.push(newResult);
       await saveProject(this);
-    } catch (err) {
-      throw new Error(`Provided result id could not be found`);
     }
   }
 

@@ -1,6 +1,6 @@
 import { Person } from 'entities/person/Person';
 import { Project } from 'entities/project/Project';
-import { Collaborator } from 'entities/types';
+import { Collaborator } from './types';
 
 import {
   Entity,
@@ -40,9 +40,7 @@ export class PersonProject {
   person!: Person;
 
   @Column({
-    type: 'enum',
-    enum: Collaborator,
-    default: Collaborator.MEMBER,
+    default: 'member' as Collaborator,
   })
   role: Collaborator;
 }
