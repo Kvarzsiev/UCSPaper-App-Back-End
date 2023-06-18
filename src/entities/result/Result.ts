@@ -1,5 +1,5 @@
-import { Project } from 'entities/Project/Project';
-import { Person } from 'entities/Person/Person';
+import { Project } from 'entities/project/Project';
+import { Person } from 'entities/person/Person';
 import {
   Entity,
   PrimaryGeneratedColumn,

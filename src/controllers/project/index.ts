@@ -1,7 +1,7 @@
 import { AppDataSource } from 'database/dataSource';
 import { NextFunction, Request, Response } from 'express';
 
-import { Project } from 'entities/Project/Project';
+import { Project } from 'entities/project/Project';
 import {
   fetchProjectWithRelations,
   fetchProjects,

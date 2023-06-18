@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { Person } from 'entities/Person/Person';
+import { Person } from 'entities/person/Person';
 import { CustomError } from 'utils/customError';
 import { fetchPerson, fetchPersonWithRelations, fetchPersons, savePerson } from 'services/person';
 

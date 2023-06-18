@@ -1,4 +1,4 @@
-import { Result } from 'entities/Result/Result';
+import { Result } from 'entities/result/Result';
 import { AppDataSource } from 'database/dataSource';
 import { Repository } from 'typeorm';
 

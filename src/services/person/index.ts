@@ -1,4 +1,4 @@
-import { Person } from 'entities/Person/Person';
+import { Person } from 'entities/person/Person';
 import { AppDataSource } from 'database/dataSource';
 import { Repository } from 'typeorm';
 

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { Person } from 'entities/Person/Person';
-import { Result } from 'entities/Result/Result';
+import { Person } from 'entities/person/Person';
+import { Result } from 'entities/result/Result';
 import { fetchPerson } from 'services/person';
 import { fetchPersonProject } from 'services/personProject';
 import { fetchRawProject } from 'services/project';

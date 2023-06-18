@@ -1,4 +1,4 @@
-import { Project } from 'entities/Project/Project';
+import { Project } from 'entities/project/Project';
 import { AppDataSource } from 'database/dataSource';
 import { Repository } from 'typeorm';
 

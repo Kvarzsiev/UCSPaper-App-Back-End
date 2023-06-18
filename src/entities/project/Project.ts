@@ -1,5 +1,5 @@
-import { PersonProject } from 'entities/PersonProject/PersonProject';
-import { Result } from 'entities/Result/Result';
+import { PersonProject } from 'entities/personProject/PersonProject';
+import { Result } from 'entities/result/Result';
 import { Collaborator } from 'entities/types';
 import { deletePersonProject, fetchPersonProject, savePersonProject } from 'services/personProject';
 import { saveProject } from 'services/project';

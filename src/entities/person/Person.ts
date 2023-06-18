@@ -1,5 +1,5 @@
-import { Project } from 'entities/Project/Project';
-import { PersonProject } from 'entities/PersonProject/PersonProject';
+import { Project } from 'entities/project/Project';
+import { PersonProject } from 'entities/personProject/PersonProject';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -10,7 +10,7 @@ import {
   OneToMany,
   ManyToMany,
 } from 'typeorm';
-import { Result } from 'entities/Result/Result';
+import { Result } from 'entities/result/Result';
 
 @Entity('Person')
 export class Person {

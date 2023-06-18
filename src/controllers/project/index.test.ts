@@ -7,8 +7,8 @@ import { AppDataSource } from 'database/dataSource';
 import { Project } from 'entities/Project/Project';
 
 import { app } from '../../';
-import { Person } from 'entities/Person/Person';
-import { PersonProject } from 'entities/PersonProject/PersonProject';
+import { Person } from 'entities/person/Person';
+import { PersonProject } from 'entities/personProject/PersonProject';
 
 describe('Project', () => {
   let projectRepository: Repository<Project>;
