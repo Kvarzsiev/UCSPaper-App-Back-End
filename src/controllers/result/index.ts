@@ -68,6 +68,41 @@ export async function createResult(req: Request, res: Response, next: NextFuncti
   }
 }
 
+export async function editResult(req: Request, res: Response, next: NextFunction) {
+  const id = Number(req.params.id);
+  const { description, members } = req.body;
+
+  try {
+    const result = await fetchRawResult(id);
+    if (!result) {
+      console.error('Não há o resultado');
+      const customError = new CustomError(400, 'Not Found', null);
+      return next(customError);
+    }
+    // const isAlreadyOnResult = result.persons.some(person => members.includes(person.id));
+    // if (isAlreadyOnResult)
+    if (members?.length > 0) {
+      try {
+        const newPersons = await getPersonsFromProject(
+          result.project.id,
+          members.filter((member) => !result.persons.find((person) => person.id === member)),
+        );
+        result.persons.push(...newPersons);
+      } catch (err) {
+        console.error(err);
+        const customError = new CustomError(400, 'Not Found', err.message);
+        return next(customError);
+      }
+    }
+    if (description) result.description = description;
+    res.status(200).send(await saveResult(result));
+  } catch (err) {
+    console.error(err);
+    const customError = new CustomError(400, 'Raw', 'Could not edit result', null, [err]);
+    return next(customError);
+  }
+}
+
 async function getPersonsFromProject(projectId: number, personIds: number[]): Promise<Person[]> {
   const resultPersons: Person[] = [];
 
