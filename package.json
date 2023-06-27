@@ -1,7 +1,7 @@
 {
-    "name": "lattes-app",
+    "name": "ucs-paper-app",
     "version": "0.0.1",
-    "description": "Back-end application for the Lattes project.",
+    "description": "Back-end application for the UCSPaper project.",
     "scripts": {
         "dev": "debug=* NODE_PATH=./src ts-node-dev --respawn ./src/index.ts",
         "build": "rimraf dist && tsc",

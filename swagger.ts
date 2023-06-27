@@ -14,8 +14,8 @@ export const swaggerDocument = {
   openapi: '3.0.1',
   info: {
     version: '1.0.0',
-    title: 'Lattes App API',
-    description: 'Documentação da API do projeto Lattes',
+    title: 'UCSPaper App API',
+    description: 'Documentação da API do projeto UCSPaper',
     termsOfService: '',
     contact: {
       name: 'Marcello',
