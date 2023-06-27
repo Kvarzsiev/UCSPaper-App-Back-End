@@ -1,4 +1,4 @@
-# Lattes Back-End App
+# UCSPaper Back-End App
 
 Steps to run this project:
 
