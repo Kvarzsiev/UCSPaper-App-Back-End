@@ -1,5 +1,5 @@
-import { PersonProject } from 'entities/personProject/PersonProject';
-import { AppDataSource } from 'database/dataSource';
+import { PersonProject } from '../../entities/personProject/PersonProject';
+import { AppDataSource } from '../../database/dataSource';
 import { Repository } from 'typeorm';
 
 export async function fetchPersonProject(personId: number, projectId: number): Promise<PersonProject> {

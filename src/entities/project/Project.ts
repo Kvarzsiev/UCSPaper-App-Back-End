@@ -1,9 +1,9 @@
-import { PersonProject } from 'entities/personProject/PersonProject';
-import { Result } from 'entities/result/Result';
-import { Collaborator } from 'entities/personProject/types';
-import { deletePersonProject, fetchPersonProject, savePersonProject } from 'services/personProject';
-import { saveProject } from 'services/project';
-import { deleteResult, fetchRawResult } from 'services/result';
+import { PersonProject } from '../personProject/PersonProject';
+import { Result } from '../result/Result';
+import { Collaborator } from '../personProject/types';
+import { deletePersonProject, fetchPersonProject, savePersonProject } from '../../services/personProject';
+import { saveProject } from '../../services/project';
+import { deleteResult, fetchRawResult } from '../../services/result';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('Project')

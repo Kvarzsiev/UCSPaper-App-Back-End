@@ -1,16 +1,14 @@
-import { Project } from 'entities/project/Project';
-import { PersonProject } from 'entities/personProject/PersonProject';
+import { PersonProject } from '../personProject/PersonProject';
+import { Result } from '../result/Result';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  JoinTable,
   OneToMany,
   ManyToMany,
 } from 'typeorm';
-import { Result } from 'entities/result/Result';
 
 @Entity('Person')
 export class Person {

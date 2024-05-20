@@ -1,18 +1,8 @@
-import { Person } from 'entities/person/Person';
-import { Project } from 'entities/project/Project';
+import { Person } from '../person/Person';
+import { Project } from '../project/Project';
 import { Collaborator } from './types';
 
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  PrimaryColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  JoinTable,
-  JoinColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity('PersonProject')
 export class PersonProject {

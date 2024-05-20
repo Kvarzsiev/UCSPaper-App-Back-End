@@ -1,14 +1,14 @@
 import { DataSource } from 'typeorm';
 
 export const AppDataSource = new DataSource({
-  type: 'mariadb',
-  host: process.env.MYSQL_HOST || '127.0.0.1',
-  port: Number(process.env.MYSQL_PORT || '3306'),
-  username: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASS || 'rootpass',
-  database: process.env.MYSQL_DB || 'lattes_db',
-  synchronize: true,
-  logging: false,
+  type: 'postgres',
+  host: process.env.PG_HOST || 'localhost',
+  port: Number(process.env.PG_PORT || '5432'),
+  username: process.env.PG_USER || 'admin',
+  password: process.env.PG_PASSWORD || '1234',
+  database: process.env.PG_DB || 'postgres',
+  synchronize: false,
+  logging: ['error'],
   entities: ['src/entities/**/*.ts', 'dist/src/entities/**/*.js'],
   migrations: ['src/database/migrations/**/*.ts'],
 });

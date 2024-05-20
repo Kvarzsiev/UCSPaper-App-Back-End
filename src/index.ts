@@ -17,8 +17,8 @@ app.use(appRouter);
 app.use(errorHandler);
 
 app.get('/', (request, response) => {
-    response.send("UCSPaper Project Back-End Application")
-})
+  response.send('UCSPaper Project Back-End Application');
+});
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
