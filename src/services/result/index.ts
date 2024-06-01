@@ -10,7 +10,7 @@ export async function fetchResults(): Promise<Result[]> {
   });
 }
 
-export async function fetchRawResult(resultId: number): Promise<Result> {
+export async function fetchRawResult(resultId: string): Promise<Result> {
   const resultRepository: Repository<Result> = AppDataSource.getRepository(Result);
   return resultRepository.findOne({
     where: {
@@ -26,7 +26,7 @@ export async function saveResult(result: Result): Promise<Result> {
   return resultRepository.save(result);
 }
 
-export async function deleteResult(resultId: number): Promise<void> {
+export async function deleteResult(resultId: string): Promise<void> {
   const resultRepository: Repository<Result> = AppDataSource.getRepository(Result);
   resultRepository.delete({
     id: resultId,

@@ -2,18 +2,15 @@ import { Person } from '../person/Person';
 import { Project } from '../project/Project';
 import { Collaborator } from './types';
 
-import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryColumn, Column, JoinColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('person_project')
 export class PersonProject {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn('uuid')
+  personId: string;
 
-  @PrimaryColumn()
-  person_id: number;
-
-  @PrimaryColumn()
-  project_id: number;
+  @PrimaryColumn('uuid')
+  projectId: string;
 
   @ManyToOne(() => Project, (project) => project.personProjects, {
     onDelete: 'CASCADE',
@@ -33,4 +30,12 @@ export class PersonProject {
     default: 'member' as Collaborator,
   })
   role: Collaborator;
+
+  @Column()
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Column()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

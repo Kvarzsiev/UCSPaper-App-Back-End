@@ -1,30 +1,54 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
 export class Result1716230766329 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `CREATE TABLE "result" (
-"id" SERIAL NOT NULL,
-"description" text,
-"created_at" TIMESTAMP NOT NULL DEFAULT now(),
-"updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-"project_id" integer,
-CONSTRAINT "PK_d3d9d916b472b702f1cacbfd4aa" PRIMARY KEY ("id"))`,
-    );
-
-    await queryRunner.query(
-      `ALTER TABLE "result" 
-ADD CONSTRAINT "FK_7dfe26d5f55cf09c36315185b1c" 
-FOREIGN KEY ("project_id") 
-REFERENCES "project"("id")
-ON DELETE CASCADE
-ON UPDATE NO ACTION`,
-    );
+    await queryRunner
+      .createTable(
+        new Table({
+          name: 'result',
+          columns: [
+            {
+              name: 'id',
+              type: 'uuid',
+              isPrimary: true,
+            },
+            {
+              name: 'project_id',
+              type: 'uuid',
+              isNullable: false,
+            },
+            {
+              name: 'description',
+              type: 'text',
+            },
+            {
+              name: 'created_at',
+              type: 'timestamp',
+              default: 'now()',
+            },
+            {
+              name: 'updated_at',
+              type: 'timestamp',
+              default: 'now()',
+            },
+          ],
+        }),
+        true,
+      )
+      .then(async () => {
+        await queryRunner.createForeignKey(
+          'result',
+          new TableForeignKey({
+            columnNames: ['project_id'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'project',
+            onDelete: 'CASCADE',
+          }),
+        );
+      });
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "result" DROP CONSTRAINT "FK_7dfe26d5f55cf09c36315185b1c"`);
-
-    await queryRunner.query(`DROP TABLE "result"`);
+    await queryRunner.dropTable('result', true, true, true);
   }
 }

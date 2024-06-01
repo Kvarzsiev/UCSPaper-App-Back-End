@@ -1,23 +1,55 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class Project1716230261927 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `CREATE TABLE "project" (
-"id" SERIAL NOT NULL,
-"title" text,
-"description" text,
-"sponsor" text,
-"start_date" TIMESTAMP,
-"finish_date" TIMESTAMP,
-"is_finished" boolean NOT NULL DEFAULT false,
-"created_at" TIMESTAMP NOT NULL DEFAULT now(),
-"updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-CONSTRAINT "PK_2725f461500317f74b0c8f11859" PRIMARY KEY ("id"))`,
+    await queryRunner.createTable(
+      new Table({
+        name: 'project',
+        columns: [
+          {
+            name: 'id',
+            type: 'uuid',
+            isPrimary: true,
+            default: 'gen_random_uuid()',
+          },
+          {
+            name: 'title',
+            type: 'text',
+          },
+          {
+            name: 'description',
+            type: 'text',
+          },
+          {
+            name: 'sponsor',
+            type: 'text',
+          },
+          {
+            name: 'start_date',
+            type: 'date',
+          },
+          {
+            name: 'finish_date',
+            type: 'date',
+          },
+          { name: 'is_finished', type: 'boolean', isNullable: false, default: false },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+        ],
+      }),
+      true,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE "project"`);
+    await queryRunner.dropTable('project', true, true, true);
   }
 }

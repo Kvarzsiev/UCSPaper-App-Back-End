@@ -12,8 +12,8 @@ import {
 
 @Entity('person')
 export class Person {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     unique: true,
@@ -38,9 +38,9 @@ export class Person {
 
   @Column()
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @Column()
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

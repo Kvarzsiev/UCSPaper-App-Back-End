@@ -50,7 +50,7 @@ export async function createPerson(req: Request, res: Response, next: NextFuncti
 }
 
 export async function editPerson(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const { name, email, institution } = req.body;
 
   try {

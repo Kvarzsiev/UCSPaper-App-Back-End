@@ -20,7 +20,7 @@ export async function getResults(req: Request, res: Response, next: NextFunction
 }
 
 export async function getResultById(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
 
   try {
     const result = await fetchRawResult(id);
@@ -69,7 +69,7 @@ export async function createResult(req: Request, res: Response, next: NextFuncti
 }
 
 export async function editResult(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const { description, members } = req.body;
 
   try {
@@ -85,7 +85,7 @@ export async function editResult(req: Request, res: Response, next: NextFunction
       try {
         const newPersons = await getPersonsFromProject(
           result.project.id,
-          members.filter((member) => !result.persons.find((person) => person.id === member)),
+          members.filter((member: string) => !result.persons.find((person) => person.id === member)),
         );
         result.persons.push(...newPersons);
       } catch (err) {
@@ -103,7 +103,7 @@ export async function editResult(req: Request, res: Response, next: NextFunction
   }
 }
 
-async function getPersonsFromProject(projectId: number, personIds: number[]): Promise<Person[]> {
+async function getPersonsFromProject(projectId: string, personIds: string[]): Promise<Person[]> {
   const resultPersons: Person[] = [];
 
   for (const personId of personIds) {

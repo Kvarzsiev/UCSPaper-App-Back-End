@@ -24,6 +24,10 @@ With the Postgres Docker container running, execute the following
 
 ```
 yarn migration:run
+
+// If you need to revert the migrations run
+
+yarn migration:revert
 ```
 
 ## Run Project

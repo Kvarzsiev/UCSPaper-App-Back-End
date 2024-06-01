@@ -12,7 +12,7 @@ export async function fetchProjects(): Promise<Project[]> {
     .getMany();
 }
 
-export async function fetchRawProject(projectId: number): Promise<Project> {
+export async function fetchRawProject(projectId: string): Promise<Project> {
   const projectRepository: Repository<Project> = AppDataSource.getRepository(Project);
 
   return projectRepository.findOne({
@@ -24,7 +24,7 @@ export async function fetchRawProject(projectId: number): Promise<Project> {
   });
 }
 
-export async function fetchProjectWithRelations(projectId: number): Promise<Project> {
+export async function fetchProjectWithRelations(projectId: string): Promise<Project> {
   const projectRepository: Repository<Project> = AppDataSource.getRepository(Project);
   return projectRepository
     .createQueryBuilder('project')

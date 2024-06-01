@@ -22,8 +22,8 @@ describe('Result', () => {
 
   before(async () => {
     await AppDataSource.initialize();
-    projectRepository = await AppDataSource.getRepository(Project);
-    resultRepository = await AppDataSource.getRepository(Result);
+    projectRepository = AppDataSource.getRepository(Project);
+    resultRepository = AppDataSource.getRepository(Result);
   });
 
   after(async () => {

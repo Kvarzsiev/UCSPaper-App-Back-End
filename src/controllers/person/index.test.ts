@@ -22,7 +22,7 @@ describe('Person', () => {
 
   before(async () => {
     await AppDataSource.initialize();
-    personRepository = await AppDataSource.getRepository(Person);
+    personRepository = AppDataSource.getRepository(Person);
   });
 
   after(async () => {

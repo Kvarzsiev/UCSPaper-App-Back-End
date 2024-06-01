@@ -1,21 +1,48 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class Person1716230133908 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `CREATE TABLE "person" (
-"id" SERIAL NOT NULL,
-"email" text NOT NULL,
-"name" text,
-"institution" text,
-"created_at" TIMESTAMP NOT NULL DEFAULT now(),
-"updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-CONSTRAINT "UQ_bc6748860f99f197a2f3e5aeb0c" UNIQUE ("email"),
-CONSTRAINT "PK_5c3ede2b2959b65c86663e58180" PRIMARY KEY ("id"))`,
+    await queryRunner.createTable(
+      new Table({
+        name: 'person',
+        columns: [
+          {
+            name: 'id',
+            type: 'uuid',
+            isPrimary: true,
+            default: 'gen_random_uuid()',
+          },
+          {
+            name: 'email',
+            type: 'text',
+            isNullable: false,
+            isUnique: true,
+          },
+          {
+            name: 'name',
+            type: 'text',
+          },
+          {
+            name: 'institution',
+            type: 'text',
+          },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+        ],
+      }),
+      true,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE "person"`);
+    await queryRunner.dropTable('person', true, true, true);
   }
 }

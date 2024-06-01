@@ -2,7 +2,7 @@ import { PersonProject } from '../../entities/personProject/PersonProject';
 import { AppDataSource } from '../../database/dataSource';
 import { Repository } from 'typeorm';
 
-export async function fetchPersonProject(personId: number, projectId: number): Promise<PersonProject> {
+export async function fetchPersonProject(personId: string, projectId: string): Promise<PersonProject> {
   const personProjectRepository = AppDataSource.getRepository(PersonProject);
   return personProjectRepository
     .createQueryBuilder('personProject')
@@ -22,6 +22,7 @@ export async function savePersonProject(personProject: PersonProject): Promise<P
 export async function deletePersonProject(personProject: PersonProject): Promise<void> {
   const personProjectRepository: Repository<PersonProject> = AppDataSource.getRepository(PersonProject);
   personProjectRepository.delete({
-    id: personProject.id,
+    personId: personProject.personId,
+    projectId: personProject.projectId,
   });
 }

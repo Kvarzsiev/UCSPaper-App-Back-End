@@ -22,7 +22,7 @@ export async function fetchPersonWithRelations(personId: number): Promise<Person
     .getOne();
 }
 
-export async function fetchPerson(personId: number): Promise<Person> {
+export async function fetchPerson(personId: string): Promise<Person> {
   const personRepository: Repository<Person> = AppDataSource.getRepository(Person);
   return personRepository.findOne({
     where: {

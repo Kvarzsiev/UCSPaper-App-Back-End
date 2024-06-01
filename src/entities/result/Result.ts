@@ -13,8 +13,8 @@ import {
 
 @Entity('result')
 export class Result {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     nullable: true,
@@ -32,9 +32,9 @@ export class Result {
 
   @Column()
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @Column()
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

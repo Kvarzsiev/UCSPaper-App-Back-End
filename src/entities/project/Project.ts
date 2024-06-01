@@ -8,8 +8,8 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Up
 
 @Entity('project')
 export class Project {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     nullable: true,
@@ -34,34 +34,34 @@ export class Project {
   personProjects: PersonProject[];
 
   @Column({ default: null })
-  start_date: Date;
+  startDate: Date;
 
   @Column({ default: null })
-  finish_date: Date;
+  finishDate: Date;
 
   @Column({ default: false })
-  is_finished: boolean;
+  isFinished: boolean;
 
   @Column()
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @Column()
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
-  hasResult(resultId: number): boolean {
+  hasResult(resultId: string): boolean {
     return this.results.some((result) => result.id === resultId);
   }
 
-  personAlreadyMember(personId: number): boolean {
-    return this.personProjects.some((personProject) => personProject.person_id === personId);
+  personAlreadyMember(personId: string): boolean {
+    return this.personProjects.some((personProject) => personProject.personId === personId);
   }
 
-  async editMembers(persons: { id: number; role: string }[]): Promise<void> {
+  async editMembers(persons: { id: string; role: string }[]): Promise<void> {
     for (const person of persons) {
       if (!this.personAlreadyMember(person.id)) {
-        console.log('Is member already');
+        console.log('Is already member');
         await this.addMember(person.id, person.role);
       } else {
         await this.editExistingMember(person.id, person.role);
@@ -71,10 +71,10 @@ export class Project {
     await saveProject(this);
   }
 
-  async addMember(personId: number, personRole: string): Promise<void> {
+  async addMember(personId: string, personRole: string): Promise<void> {
     const newPersonProject = new PersonProject();
-    newPersonProject.project_id = this.id;
-    newPersonProject.person_id = personId;
+    newPersonProject.projectId = this.id;
+    newPersonProject.personId = personId;
 
     if (isStringInEnum(personRole, Collaborator)) {
       newPersonProject.role = personRole as Collaborator;
@@ -85,7 +85,7 @@ export class Project {
     this.personProjects.push(await savePersonProject(newPersonProject));
   }
 
-  async addResultToProject(resultId: number): Promise<void> {
+  async addResultToProject(resultId: string): Promise<void> {
     const newResult = await fetchRawResult(resultId);
     if (!newResult) {
       throw new Error('Could not find result');
@@ -95,19 +95,21 @@ export class Project {
     }
   }
 
-  async removePersonToProject(personId: number): Promise<void> {
+  async removePersonToProject(personId: string): Promise<void> {
     try {
       const personProject = await fetchPersonProject(personId, this.id);
       await deletePersonProject(personProject);
-      this.personProjects = this.personProjects.filter((pp) => personProject.id != pp.id);
+      this.personProjects = this.personProjects.filter(
+        (pp) => `${personProject.personId}${personProject.projectId}` != `${pp.personId}${pp.projectId}`,
+      );
       await saveProject(this);
     } catch (err) {
       throw new Error(`Provided person not related to project`);
     }
   }
 
-  async editExistingMember(personId: number, role: string) {
-    const personProject = this.personProjects.find((p) => p.person_id == personId);
+  async editExistingMember(personId: string, role: string) {
+    const personProject = this.personProjects.find((p) => p.personId == personId);
 
     if (!isStringInEnum(role, Collaborator)) {
       throw new Error('Could not edit member');
@@ -117,7 +119,7 @@ export class Project {
     }
   }
 
-  async removeResultFromProject(resultId: number) {
+  async removeResultFromProject(resultId: string) {
     try {
       await deleteResult(resultId);
       this.results = this.results.filter((r) => r.id != resultId);

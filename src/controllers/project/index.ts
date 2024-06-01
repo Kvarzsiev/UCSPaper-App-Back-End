@@ -24,7 +24,7 @@ export async function getProjects(req: Request, res: Response, next: NextFunctio
 }
 
 export async function getProjectById(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
 
   try {
     await fetchProjectWithRelations(id).then((project) => {
@@ -55,9 +55,9 @@ export async function createProject(req: Request, res: Response, next: NextFunct
     project.title = title;
     project.description = description;
     project.sponsor = sponsor;
-    project.start_date = parseDateStr(createDate);
-    project.finish_date = parseDateStr(finishDate, true);
-    project.is_finished = isFinished;
+    project.startDate = parseDateStr(createDate);
+    project.finishDate = parseDateStr(finishDate, true);
+    project.isFinished = isFinished;
 
     await projectRepository.save(project);
     res.status(201).send(await fetchProjectWithRelations(project.id));
@@ -68,7 +68,7 @@ export async function createProject(req: Request, res: Response, next: NextFunct
 }
 
 export async function editProject(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const { title, description, sponsor, startDate, finishDate, isFinished } = req.body;
 
   try {
@@ -81,9 +81,9 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
 
     project.title = title;
     project.sponsor = sponsor;
-    project.start_date = startDate;
-    project.finish_date = finishDate;
-    project.is_finished = isFinished;
+    project.startDate = startDate;
+    project.finishDate = finishDate;
+    project.isFinished = isFinished;
     project.description = description;
 
     await saveProject(project);
@@ -108,7 +108,7 @@ export async function delProject(req: Request, res: Response, next: NextFunction
 }
 
 export async function editProjectPersons(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const { persons } = req.body;
 
   try {
@@ -131,7 +131,7 @@ export async function editProjectPersons(req: Request, res: Response, next: Next
 }
 
 export async function deleteProjectPersons(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const { personsIds } = req.body;
 
   try {
@@ -162,7 +162,7 @@ export async function deleteProjectPersons(req: Request, res: Response, next: Ne
 }
 
 export async function deleteProjectResults(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const { resultIds } = req.body;
 
   try {
@@ -193,7 +193,7 @@ export async function deleteProjectResults(req: Request, res: Response, next: Ne
 }
 
 export async function editProjectResults(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const { resultIds } = req.body;
 
   try {
@@ -237,12 +237,12 @@ function buildResponseProject(project: Project) {
     description: project.description,
     title: project.title,
     sponsor: project.sponsor,
-    startDate: project.start_date,
-    finishDate: project.finish_date,
-    isFinished: project.is_finished,
+    startDate: project.startDate,
+    finishDate: project.finishDate,
+    isFinished: project.isFinished,
     results: project.results,
     persons: project.personProjects.map((personProject) => ({ ...personProject.person, role: personProject.role })),
-    created_at: project.created_at,
-    updated_at: project.updated_at,
+    created_at: project.createdAt,
+    updated_at: project.updatedAt,
   };
 }
