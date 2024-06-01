@@ -11,7 +11,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 
-@Entity('Result')
+@Entity('result')
 export class Result {
   @PrimaryGeneratedColumn()
   id: number;

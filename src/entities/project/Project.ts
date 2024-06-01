@@ -6,7 +6,7 @@ import { saveProject } from '../../services/project';
 import { deleteResult, fetchRawResult } from '../../services/result';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity('Project')
+@Entity('project')
 export class Project {
   @PrimaryGeneratedColumn()
   id: number;
@@ -34,13 +34,13 @@ export class Project {
   personProjects: PersonProject[];
 
   @Column({ default: null })
-  startDate: Date;
+  start_date: Date;
 
   @Column({ default: null })
-  finishDate: Date;
+  finish_date: Date;
 
   @Column({ default: false })
-  isFinished: boolean;
+  is_finished: boolean;
 
   @Column()
   @CreateDateColumn()

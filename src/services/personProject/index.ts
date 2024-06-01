@@ -6,8 +6,8 @@ export async function fetchPersonProject(personId: number, projectId: number): P
   const personProjectRepository = AppDataSource.getRepository(PersonProject);
   return personProjectRepository
     .createQueryBuilder('personProject')
-    .select('personProject')
-    .where('personProject.person_id = :personId AND personProject.project_id = :projectId', {
+    .select('person_project')
+    .where('person_project.person_id = :personId AND person_project.project_id = :projectId', {
       projectId: projectId,
       personId: personId,
     })

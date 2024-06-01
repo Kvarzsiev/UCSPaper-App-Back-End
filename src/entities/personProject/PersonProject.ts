@@ -4,7 +4,7 @@ import { Collaborator } from './types';
 
 import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, JoinColumn, ManyToOne } from 'typeorm';
 
-@Entity('PersonProject')
+@Entity('person_project')
 export class PersonProject {
   @PrimaryGeneratedColumn()
   id: number;

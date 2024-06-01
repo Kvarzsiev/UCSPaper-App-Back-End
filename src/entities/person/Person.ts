@@ -10,7 +10,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 
-@Entity('Person')
+@Entity('person')
 export class Person {
   @PrimaryGeneratedColumn()
   id: number;
