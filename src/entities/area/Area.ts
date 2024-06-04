@@ -24,7 +24,6 @@ export class Area {
   hierarchy: string;
 
   @ManyToMany(() => Project, (project) => project.areas)
-  @JoinTable()
   projects: Project[];
 
   @Column()

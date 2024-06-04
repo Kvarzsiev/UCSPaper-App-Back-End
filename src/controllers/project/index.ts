@@ -10,10 +10,17 @@ import {
   deleteProject,
 } from 'services/project';
 import { CustomError } from 'utils/customError';
+import { fetchArea, fetchAreasById } from 'services/area';
+import { Area } from 'entities/area/Area';
 
 export async function getProjects(req: Request, res: Response, next: NextFunction) {
   try {
-    await fetchProjects().then((projects) => {
+    let area: Area | undefined = undefined;
+    if (req.query?.areaId) {
+      area = await fetchArea(req.query?.areaId.toString());
+    }
+
+    await fetchProjects(area).then((projects) => {
       const projectsResponse = projects.map((project) => buildResponseProject(project));
       res.status(200).send(projectsResponse);
     });
@@ -103,6 +110,31 @@ export async function delProject(req: Request, res: Response, next: NextFunction
     res.status(200).end();
   } catch (err) {
     const customError = new CustomError(400, 'Raw', `Could not delete project`, null, [err]);
+    return next(customError);
+  }
+}
+
+export async function editProjectAreas(req: Request, res: Response, next: NextFunction) {
+  const id = req.params.id;
+  const { areas } = req.body;
+
+  try {
+    const project = await fetchRawProject(id);
+
+    if (!project) {
+      const customError = new CustomError(404, 'Not Found', 'Project not found');
+      return next(customError);
+    }
+
+    const fetchedAreas = await fetchAreasById(areas);
+
+    if (fetchedAreas?.length > 0) {
+      await project.editAreas(fetchedAreas);
+    }
+
+    res.status(201).send(buildResponseProject(await fetchProjectWithRelations(id)));
+  } catch (err) {
+    const customError = new CustomError(400, 'Raw', `Could not edit project`, null, err);
     return next(customError);
   }
 }
@@ -241,6 +273,7 @@ function buildResponseProject(project: Project) {
     finishDate: project.finishDate,
     isFinished: project.isFinished,
     results: project.results,
+    areas: project.areas,
     persons: project.personProjects.map((personProject) => ({ ...personProject.person, role: personProject.role })),
     created_at: project.createdAt,
     updated_at: project.updatedAt,

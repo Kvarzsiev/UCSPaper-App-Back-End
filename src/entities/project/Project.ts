@@ -8,6 +8,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -60,6 +61,7 @@ export class Project {
   updatedAt: Date;
 
   @ManyToMany(() => Area, (area) => area.projects)
+  @JoinTable()
   areas: Area[];
 
   hasResult(resultId: string): boolean {
@@ -70,10 +72,15 @@ export class Project {
     return this.personProjects.some((personProject) => personProject.personId === personId);
   }
 
+  async editAreas(areas: Area[]): Promise<void> {
+    this.areas = areas;
+
+    await saveProject(this);
+  }
+
   async editMembers(persons: { id: string; role: string }[]): Promise<void> {
     for (const person of persons) {
       if (!this.personAlreadyMember(person.id)) {
-        console.log('Is already member');
         await this.addMember(person.id, person.role);
       } else {
         await this.editExistingMember(person.id, person.role);

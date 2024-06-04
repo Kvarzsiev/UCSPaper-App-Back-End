@@ -1,5 +1,5 @@
 import { AppDataSource } from '../../database/dataSource';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Area } from 'entities/area/Area';
 
 export function fetchAreas(): Promise<Area[]> {
@@ -23,6 +23,15 @@ export function fetchAreas(): Promise<Area[]> {
 //       .getOne()
 //   );
 // }
+
+export function fetchAreasById(ids: string[]): Promise<Area[]> {
+  const repository: Repository<Area> = AppDataSource.getRepository(Area);
+  return repository.find({
+    where: {
+      id: In(ids),
+    },
+  });
+}
 
 export function fetchArea(id: string): Promise<Area> {
   const repository: Repository<Area> = AppDataSource.getRepository(Area);
