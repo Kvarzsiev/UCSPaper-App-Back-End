@@ -18,6 +18,8 @@ describe('Result', () => {
 
   const project = new Project();
   project.description = projectDescription;
+  project.title = 'Test Project Title';
+  project.startDate = new Date();
   project.sponsor = projectSponsor;
 
   before(async () => {
@@ -55,7 +57,7 @@ describe('Result', () => {
     it('should return 400 if project not found', async () => {
       const res = await request(app).post('/results').set('ContentType', 'application/json').send({
         description: 'test result',
-        projectId: 0,
+        projectId: '848a56a8-28e0-430d-8695-d7ca9a15c7b4',
       });
 
       expect(res.status).to.equal(400);

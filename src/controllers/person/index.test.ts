@@ -51,7 +51,7 @@ describe('Person', () => {
     });
 
     it('should return 404 if no person is found', async () => {
-      const res = await request(app).get('/persons/0');
+      const res = await request(app).get('/persons/81c158c0-efc3-4728-8a58-873b0d5489d5');
       expect(res.status).to.equal(404);
     });
   });
@@ -63,7 +63,6 @@ describe('Person', () => {
         email: 'postTestPerson@test.com',
         institution: 'test',
       });
-
       expect(res.status).to.equal(201);
       expect(res.body.email).to.equal('postTestPerson@test.com');
       await personRepository.delete(res.body.id);
@@ -77,11 +76,15 @@ describe('Person', () => {
 
       await personRepository.save(firstPerson);
 
-      const res = await request(app).post('/persons').set('ContentType', 'application/json').send({
-        name: 'test person',
-        email: 'postTestPerson@test.com',
-        institution: 'test',
-      });
+      const res = await request(app)
+        .post('/persons')
+        .set('ContentType', 'application/json')
+        .send({
+          name: 'test person',
+          email: 'postTestPerson@test.com',
+          institution: 'test',
+        })
+        .catch();
 
       expect(res.status).to.equal(400);
       await personRepository.delete(firstPerson.id);

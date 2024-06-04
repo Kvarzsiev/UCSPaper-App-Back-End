@@ -16,7 +16,7 @@ export async function getPersons(req: Request, res: Response, next: NextFunction
 }
 
 export async function getPersonById(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
 
   try {
     await fetchPersonWithRelations(id).then((person) => {

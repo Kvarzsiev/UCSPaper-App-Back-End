@@ -20,6 +20,8 @@ describe('Project', () => {
 
   const project = new Project();
   project.description = projectDescription;
+  project.title = 'Test Project Title';
+  project.startDate = new Date();
   project.sponsor = projectSponsor;
 
   const personEmail: string = 'test@example.com';
@@ -67,7 +69,7 @@ describe('Project', () => {
     });
 
     it('should return 404 if no project is found', async () => {
-      const res = await request(app).get('/projects/0');
+      const res = await request(app).get('/projects/38b3f25a-2ad6-4c7c-bc4f-92b662bbb0e3');
       expect(res.status).to.equal(404);
     });
   });
@@ -77,6 +79,7 @@ describe('Project', () => {
       const res = await request(app).post('/projects').set('ContentType', 'application/json').send({
         description: 'test project',
         sponsor: 'test sponsor',
+        title: 'Bom dia e CIA',
         createdDate: new Date(),
         finishDate: null,
         isFinish: false,
@@ -97,7 +100,6 @@ describe('Project', () => {
           persons: [{ id: person.id, role: 'member' }],
         });
 
-      console.log(res.body);
       expect(res.body.persons[0].id).to.equal(person.id);
     });
   });

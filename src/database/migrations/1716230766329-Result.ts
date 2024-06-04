@@ -11,6 +11,7 @@ export class Result1716230766329 implements MigrationInterface {
               name: 'id',
               type: 'uuid',
               isPrimary: true,
+              default: 'gen_random_uuid()',
             },
             {
               name: 'project_id',

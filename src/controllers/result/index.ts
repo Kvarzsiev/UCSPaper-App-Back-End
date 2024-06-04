@@ -44,6 +44,7 @@ export async function createResult(req: Request, res: Response, next: NextFuncti
     const project = await fetchRawProject(projectId);
 
     if (!project) {
+      console.log('SEM PROJETO');
       const customError = new CustomError(400, 'Not Found', 'Project not found');
       return next(customError);
     }

@@ -5,18 +5,19 @@ export class PersonResult1716234381792 implements MigrationInterface {
     await queryRunner
       .createTable(
         new Table({
-          name: 'person_result',
+          name: 'result_persons_person',
           columns: [
+            {
+              name: 'result_id',
+              type: 'uuid',
+              isPrimary: true,
+            },
             {
               name: 'person_id',
               type: 'uuid',
               isPrimary: true,
             },
-            {
-              name: 'result_id',
-              type: 'uuid',
-              isPrimary: false,
-            },
+
             {
               name: 'created_at',
               type: 'timestamp',
@@ -32,7 +33,7 @@ export class PersonResult1716234381792 implements MigrationInterface {
         true,
       )
       .then(async () => {
-        await queryRunner.createForeignKeys('person_result', [
+        await queryRunner.createForeignKeys('result_persons_person', [
           new TableForeignKey({
             columnNames: ['person_id'],
             referencedColumnNames: ['id'],
@@ -49,6 +50,6 @@ export class PersonResult1716234381792 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('person_result', true, true, true);
+    await queryRunner.dropTable('result_persons_person', true, true, true);
   }
 }

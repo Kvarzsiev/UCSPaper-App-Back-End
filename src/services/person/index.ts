@@ -9,17 +9,19 @@ export async function fetchPersons(): Promise<Person[]> {
   });
 }
 
-export async function fetchPersonWithRelations(personId: number): Promise<Person> {
+export async function fetchPersonWithRelations(personId: string): Promise<Person> {
   const personRepository: Repository<Person> = AppDataSource.getRepository(Person);
-  return personRepository
-    .createQueryBuilder('person')
-    .leftJoinAndSelect('person.results', 'results')
-    .leftJoinAndSelect('person.personProjects', 'personProject')
-    .leftJoinAndSelect('personProject.project', 'project')
-    .where('person.id = :id', {
-      id: personId,
-    })
-    .getOne();
+  return (
+    personRepository
+      .createQueryBuilder('person')
+      .leftJoinAndSelect('person.results', 'results')
+      // .leftJoinAndSelect('person.personProjects', 'person_project')
+      // .leftJoinAndSelect('person_project.project', 'project')
+      .where('person.id = :id', {
+        id: personId,
+      })
+      .getOne()
+  );
 }
 
 export async function fetchPerson(personId: string): Promise<Person> {

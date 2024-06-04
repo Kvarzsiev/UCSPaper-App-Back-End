@@ -31,6 +31,7 @@ export class Project1716230261927 implements MigrationInterface {
           {
             name: 'finish_date',
             type: 'date',
+            isNullable: true,
           },
           { name: 'is_finished', type: 'boolean', isNullable: false, default: false },
           {
