@@ -4,7 +4,16 @@ import { Collaborator } from '../personProject/types';
 import { deletePersonProject, fetchPersonProject, savePersonProject } from '../../services/personProject';
 import { saveProject } from '../../services/project';
 import { deleteResult, fetchRawResult } from '../../services/result';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Area } from '../area/Area';
 
 @Entity('project')
 export class Project {
@@ -49,6 +58,9 @@ export class Project {
   @Column()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToMany(() => Area, (area) => area.projects)
+  areas: Area[];
 
   hasResult(resultId: string): boolean {
     return this.results.some((result) => result.id === resultId);

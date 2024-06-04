@@ -33,19 +33,25 @@ export class PersonResult1716234381792 implements MigrationInterface {
         true,
       )
       .then(async () => {
-        await queryRunner.createForeignKeys('result_persons_person', [
-          new TableForeignKey({
-            columnNames: ['person_id'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'person',
-          }),
-          new TableForeignKey({
-            columnNames: ['result_id'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'result',
-            onDelete: 'CASCADE',
-          }),
-        ]);
+        await queryRunner
+          .createForeignKeys('result_persons_person', [
+            new TableForeignKey({
+              columnNames: ['person_id'],
+              referencedColumnNames: ['id'],
+              referencedTableName: 'person',
+            }),
+            new TableForeignKey({
+              columnNames: ['result_id'],
+              referencedColumnNames: ['id'],
+              referencedTableName: 'result',
+              onDelete: 'CASCADE',
+            }),
+          ])
+          .then(async () => {
+            await queryRunner.query(
+              "INSERT INTO result_persons_person (result_id, person_id) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'e26118b2-7f7c-457e-b1d6-aa413e519af0')",
+            );
+          });
       });
   }
 

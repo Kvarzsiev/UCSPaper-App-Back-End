@@ -38,20 +38,26 @@ export class PersonProject1716230263582 implements MigrationInterface {
         true,
       )
       .then(async () => {
-        await queryRunner.createForeignKeys('person_project', [
-          new TableForeignKey({
-            columnNames: ['person_id'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'person',
-            onDelete: 'CASCADE',
-          }),
-          new TableForeignKey({
-            columnNames: ['project_id'],
-            referencedColumnNames: ['id'],
-            referencedTableName: 'project',
-            onDelete: 'CASCADE',
-          }),
-        ]);
+        await queryRunner
+          .createForeignKeys('person_project', [
+            new TableForeignKey({
+              columnNames: ['person_id'],
+              referencedColumnNames: ['id'],
+              referencedTableName: 'person',
+              onDelete: 'CASCADE',
+            }),
+            new TableForeignKey({
+              columnNames: ['project_id'],
+              referencedColumnNames: ['id'],
+              referencedTableName: 'project',
+              onDelete: 'CASCADE',
+            }),
+          ])
+          .then(async () => {
+            await queryRunner.query(
+              "INSERT INTO person_project (person_id, project_id) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'e26118b2-7f7c-457e-b1d6-aa413e519af0')",
+            );
+          });
       });
   }
 
