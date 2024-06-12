@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 export async function fetchPersonProject(personId: string, projectId: string): Promise<PersonProject> {
   const personProjectRepository = AppDataSource.getRepository(PersonProject);
   return personProjectRepository
-    .createQueryBuilder('personProject')
+    .createQueryBuilder('person_project')
     .select('person_project')
     .where('person_project.person_id = :personId AND person_project.project_id = :projectId', {
       projectId: projectId,
