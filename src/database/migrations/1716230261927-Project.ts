@@ -24,6 +24,12 @@ export class Project1716230261927 implements MigrationInterface {
             {
               name: 'sponsor',
               type: 'text',
+              isNullable: true,
+            },
+            {
+              name: 'sponsored_value',
+              type: 'NUMERIC(15, 2)',
+              isNullable: true,
             },
             {
               name: 'start_date',
@@ -51,7 +57,7 @@ export class Project1716230261927 implements MigrationInterface {
       )
       .then(async () => {
         await queryRunner.query(
-          "INSERT INTO project (id, title, description, sponsor, start_date) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'Title', 'Description', 'FUCS', NOW())",
+          "INSERT INTO project (id, title, description, sponsor, sponsored_value, start_date) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'Title', 'Description', 'FUCS', 10000.25, NOW())",
         );
       });
   }

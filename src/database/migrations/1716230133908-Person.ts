@@ -43,7 +43,8 @@ export class Person1716230133908 implements MigrationInterface {
       )
       .then(async () => {
         await queryRunner.query(
-          "INSERT INTO person (id, email, name, institution) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'ebaroni@ucs.br', 'Enzo Baroni', 'UCS')",
+          `INSERT INTO person (id, email, name, institution) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'ebaroni@ucs.br', 'Enzo Baroni', 'UCS');
+          INSERT INTO person (id, email, name, institution) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af1', 'wtbecker@ucs.br', 'William Tomazini Becker', 'UCS')`,
         );
       });
   }

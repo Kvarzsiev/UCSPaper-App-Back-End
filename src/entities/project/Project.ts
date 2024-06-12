@@ -37,6 +37,11 @@ export class Project {
   })
   sponsor: string;
 
+  @Column({
+    nullable: true,
+  })
+  sponsoredValue: number;
+
   @OneToMany(() => Result, (result) => result.project, { onDelete: 'CASCADE' })
   results: Result[];
 
