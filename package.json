@@ -4,6 +4,7 @@
   "description": "Back-end application for the UCSPaper project.",
   "scripts": {
     "dev": "debug=* NODE_PATH=./src ts-node-dev --respawn ./src/index.ts",
+    "dev-willi": "yarn http-server -p 4000",
     "build": "rimraf dist && tsc",
     "start": "NODE_PATH=./dist node ./dist/index.js",
     "tsc": "tsc --noEmit",
@@ -40,6 +41,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "helmet": "^5.0.2",
+    "http-server": "^14.1.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "pg": "^8.11.5",
