@@ -20,4 +20,3 @@
   "include": ["./src/**/*.tsx", "./src/**/*.ts"],
   "exclude": ["node_modules", "test/**/*.ts"]
 }
-
