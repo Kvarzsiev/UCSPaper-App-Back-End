@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import { Project } from 'entities/project/Project';
 import {
   fetchProjectWithRelations,
+  fetchProjectsCsvByFilters,
   fetchProjects,
   fetchRawProject,
   saveProject,
@@ -26,6 +27,18 @@ export async function getProjects(req: Request, res: Response, next: NextFunctio
     });
   } catch (err) {
     const customError = new CustomError(400, 'Raw', 'Cant retrieve list of projects', null, [err]);
+    return next(customError);
+  }
+}
+
+export async function getProjectCsv(req: Request, res: Response, next: NextFunction) {
+  try {
+    await fetchProjectsCsvByFilters(req.query).then((csvText) => {
+      res.type('text/csv');
+      res.attachment('projects.csv').send(csvText);
+    });
+  } catch (err) {
+    const customError = new CustomError(400, 'Raw', `Can't retrieve projects.`, null, err);
     return next(customError);
   }
 }
@@ -53,7 +66,7 @@ export async function getProjectById(req: Request, res: Response, next: NextFunc
 }
 
 export async function createProject(req: Request, res: Response, next: NextFunction) {
-  const { title, description, sponsor, createDate, finishDate, isFinished } = req.body;
+  const { title, description, sponsor, sponsoredValue, createDate, finishDate, isFinished } = req.body;
 
   const projectRepository = AppDataSource.getRepository(Project);
 
@@ -62,6 +75,7 @@ export async function createProject(req: Request, res: Response, next: NextFunct
     project.title = title;
     project.description = description;
     project.sponsor = sponsor;
+    project.sponsoredValue = sponsoredValue;
     project.startDate = parseDateStr(createDate);
     project.finishDate = parseDateStr(finishDate, true);
     project.isFinished = isFinished;
@@ -76,7 +90,7 @@ export async function createProject(req: Request, res: Response, next: NextFunct
 
 export async function editProject(req: Request, res: Response, next: NextFunction) {
   const id = req.params.id;
-  const { title, description, sponsor, startDate, finishDate, isFinished } = req.body;
+  const { title, description, sponsor, sponsoredValue, startDate, finishDate, isFinished } = req.body;
 
   try {
     const project = await fetchRawProject(id);
@@ -88,6 +102,7 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
 
     project.title = title;
     project.sponsor = sponsor;
+    project.sponsoredValue = sponsoredValue;
     project.startDate = startDate;
     project.finishDate = finishDate;
     project.isFinished = isFinished;
@@ -269,6 +284,7 @@ function buildResponseProject(project: Project) {
     description: project.description,
     title: project.title,
     sponsor: project.sponsor,
+    sponsoredValue: project.sponsoredValue,
     startDate: project.startDate,
     finishDate: project.finishDate,
     isFinished: project.isFinished,

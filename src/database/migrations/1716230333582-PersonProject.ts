@@ -55,7 +55,9 @@ export class PersonProject1716230263582 implements MigrationInterface {
           ])
           .then(async () => {
             await queryRunner.query(
-              "INSERT INTO person_project (person_id, project_id) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'e26118b2-7f7c-457e-b1d6-aa413e519af0')",
+              `INSERT INTO person_project (person_id, project_id, role) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'e26118b2-7f7c-457e-b1d6-aa413e519af0', 'member');
+              INSERT INTO person_project (person_id, project_id, role) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af1', 'e26118b2-7f7c-457e-b1d6-aa413e519af0', 'member');
+              INSERT INTO person_project (person_id, project_id, role) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af2', 'e26118b2-7f7c-457e-b1d6-aa413e519af0', 'coordinator');`,
             );
           });
       });

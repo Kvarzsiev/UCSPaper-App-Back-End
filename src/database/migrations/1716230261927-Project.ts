@@ -57,7 +57,7 @@ export class Project1716230261927 implements MigrationInterface {
       )
       .then(async () => {
         await queryRunner.query(
-          "INSERT INTO project (id, title, description, sponsor, sponsored_value, start_date) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'Title', 'Description', 'FUCS', 10000.25, NOW())",
+          "INSERT INTO project (id, title, description, sponsor, sponsored_value, start_date) VALUES ('e26118b2-7f7c-457e-b1d6-aa413e519af0', 'Projeto de Laboratório de Software', 'Projeto de desenvolvimento de uma plataforma para controle e consulta de trabalhos científicos.', 'FUCS', 10000.25, NOW())",
         );
       });
   }

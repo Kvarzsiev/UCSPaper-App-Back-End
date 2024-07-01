@@ -40,7 +40,7 @@ export class Project {
   @Column({
     nullable: true,
   })
-  sponsoredValue: number;
+  sponsoredValue: string;
 
   @OneToMany(() => Result, (result) => result.project, { onDelete: 'CASCADE' })
   results: Result[];
