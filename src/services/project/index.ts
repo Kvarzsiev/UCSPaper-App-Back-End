@@ -48,7 +48,6 @@ export async function fetchProjectsCsvByFilters(filters: {
   finishDateStart?: string;
   finishDateEnd?: string;
 }): Promise<string> {
-  console.log(filters);
   const projectRepository: Repository<Project> = AppDataSource.getRepository(Project);
 
   let index = 1;
@@ -116,12 +115,8 @@ left join
     where.push(filters.finishDateEnd);
   }
 
-  console.log('QUERY', query);
-  console.log('WHERE ', where);
-
   const projects = await projectRepository.query(query, where);
 
-  console.log(projects);
   const csv = convertToCSV(projects);
 
   return csv;

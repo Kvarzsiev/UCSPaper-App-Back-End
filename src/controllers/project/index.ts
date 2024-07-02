@@ -23,6 +23,7 @@ export async function getProjects(req: Request, res: Response, next: NextFunctio
 
     await fetchProjects(area).then((projects) => {
       const projectsResponse = projects.map((project) => buildResponseProject(project));
+
       res.status(200).send(projectsResponse);
     });
   } catch (err) {

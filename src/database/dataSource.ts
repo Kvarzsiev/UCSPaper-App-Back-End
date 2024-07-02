@@ -9,7 +9,7 @@ export const AppDataSource = new DataSource({
   password: process.env.PG_PASSWORD || '1234',
   database: process.env.PG_DB || 'postgres',
   synchronize: false,
-  logging: ['error'],
+  logging: [], //'error'
   entities: ['src/entities/**/*.ts', 'dist/src/entities/**/*.js'],
   migrations: ['src/database/migrations/**/*.ts'],
   namingStrategy: new SnakeNamingStrategy(),

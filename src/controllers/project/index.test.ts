@@ -68,6 +68,19 @@ describe('Project', () => {
       expect(res.body.id).to.equal(project.id);
     });
 
+    it('should return project filtered by Area', async () => {
+      const res = await request(app).get(`/projects?areaId=e26118b2-7f7c-457e-b1d6-aa413e519af3`);
+      expect(res.status).to.equal(200);
+      expect(res.body.length == 1);
+      expect(res.body[0].id).to.equal('e26118b2-7f7c-457e-b1d6-aa413e519af0');
+    });
+
+    it('should return projects csv', async () => {
+      const res = await request(app).get(`/projects/csv`);
+      expect(res.headers['content-type']).to.equal('text/csv; charset=utf-8');
+      expect(res.headers['content-disposition']).to.equal('attachment; filename="projects.csv"');
+    });
+
     it('should return 404 if no project is found', async () => {
       const res = await request(app).get('/projects/38b3f25a-2ad6-4c7c-bc4f-92b662bbb0e3');
       expect(res.status).to.equal(404);
