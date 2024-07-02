@@ -119,7 +119,7 @@ export async function editProject(req: Request, res: Response, next: NextFunctio
 }
 
 export async function delProject(req: Request, res: Response, next: NextFunction) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
 
   try {
     await deleteProject(id);

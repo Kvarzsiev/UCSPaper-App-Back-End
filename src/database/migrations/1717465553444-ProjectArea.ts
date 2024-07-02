@@ -38,6 +38,7 @@ export class ProjectArea1717465553444 implements MigrationInterface {
               columnNames: ['project_id'],
               referencedColumnNames: ['id'],
               referencedTableName: 'project',
+              onDelete: 'CASCADE',
             }),
             new TableForeignKey({
               columnNames: ['area_id'],

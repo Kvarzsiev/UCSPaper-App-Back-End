@@ -98,7 +98,7 @@ export const getProject = {
       in: 'path',
       name: 'id',
       schema: {
-        type: 'number',
+        type: 'string',
       },
       required: true,
     },

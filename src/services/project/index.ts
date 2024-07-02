@@ -153,7 +153,7 @@ export async function saveProject(project: Project): Promise<Project> {
   return projectRepository.save(project);
 }
 
-export async function deleteProject(projectId: number): Promise<void> {
+export async function deleteProject(projectId: string): Promise<void> {
   const projectRepository: Repository<Project> = AppDataSource.getRepository(Project);
   await projectRepository
     .createQueryBuilder('project')

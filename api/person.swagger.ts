@@ -127,7 +127,7 @@ export const deletePerson = {
       in: 'path',
       name: 'id',
       schema: {
-        type: 'number',
+        type: 'string',
       },
       required: true,
     },

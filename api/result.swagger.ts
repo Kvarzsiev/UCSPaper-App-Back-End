@@ -63,7 +63,7 @@ export const getResult = {
       in: 'path',
       name: 'id',
       schema: {
-        type: 'number',
+        type: 'string',
       },
       required: true,
     },
